@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kape — Coffee Recipes</title>
+  <meta name="description" content="A working coffee recipe book: the house menu, new drinks to try, and the classics, weighed in grams.">
+  <meta name="theme-color" content="#dfddd7">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://images.unsplash.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=5">
+</head>
+<body>
+  <!-- Coffee duotone: every photo is mapped onto espresso → #987654 → cream so the set reads as one series -->
+  <svg class="defs" aria-hidden="true" focusable="false">
+    <filter id="duotone" color-interpolation-filters="sRGB">
+      <feColorMatrix type="matrix" values=".2126 .7152 .0722 0 0  .2126 .7152 .0722 0 0  .2126 .7152 .0722 0 0  0 0 0 1 0"/>
+      <feComponentTransfer>
+        <feFuncR type="table" tableValues="0.106 0.596 0.937"/>
+        <feFuncG type="table" tableValues="0.082 0.463 0.914"/>
+        <feFuncB type="table" tableValues="0.063 0.329 0.871"/>
+      </feComponentTransfer>
+    </filter>
+  </svg>
+
+  <a class="skip" href="#index">Skip to recipes</a>
+
+  <div class="sheet">
+    <header class="nav" id="top">
+      <a class="nav__brand cell" href="#top" aria-label="Kape, back to top"><span data-site-name>Kape</span> <span class="paren" data-total>(00)</span></a>
+      <nav class="nav__links cell" aria-label="Sections">
+        <a href="#index">Index</a>
+        <a href="#must-try">Must try</a>
+        <a href="#basics">Basics</a>
+        <a href="#shot">Shot timer</a>
+      </nav>
+      <div class="nav__meta cell"><span class="dot" aria-hidden="true"></span> Weighed in grams</div>
+    </header>
+
+    <section class="hero" aria-label="Introduction">
+      <h1 class="hero__word" aria-label="Kape">
+        <span class="hero__letters" data-wordmark>Kape</span><sup class="paren" data-total>(00)</sup>
+      </h1>
+      <div class="hero__row">
+        <p class="cell hero__intro">A working recipe book for the bar. The house menu, the new drinks we need to try, and the classics. Every amount is in grams, and every espresso drink starts from the same double shot.</p>
+        <div class="cell spec"><span class="spec__label">(Dose → Yield)</span><span class="spec__value">18 g → 36 g</span></div>
+        <div class="cell spec"><span class="spec__label">(Shot time)</span><span class="spec__value">25–30 s</span></div>
+        <div class="cell spec spec--wide-hide"><span class="spec__label">(Water)</span><span class="spec__value">93–96 °C</span></div>
+      </div>
+    </section>
+
+    <!-- ============ INDEX ============ -->
+    <section id="index" class="index" aria-labelledby="index-title">
+      <div class="section-head">
+        <h2 id="index-title" class="cell">Index</h2>
+        <p class="cell section-head__note">Tap a drink for the recipe, method and notes.</p>
+      </div>
+
+      <div class="filters" role="search">
+        <div class="filters__row filters__tabs" role="tablist" aria-label="Collection" data-collections></div>
+        <div class="filters__row filters__secondary">
+          <div class="chips" role="group" aria-label="Serve" data-serve></div>
+          <div class="chips chips--scroll" role="group" aria-label="Style" data-families></div>
+          <label class="search">
+            <span class="visually-hidden">Search drinks or ingredients</span>
+            <input type="search" placeholder="Search drinks or ingredients" autocomplete="off" data-search>
+          </label>
+        </div>
+      </div>
+
+      <p class="results-line" aria-live="polite" data-results></p>
+      <ul class="grid" data-grid></ul>
+      <div class="empty" hidden data-empty>
+        <p>Nothing matches that.</p>
+        <button type="button" class="link-btn" data-clear>Clear filters</button>
+      </div>
+    </section>
+
+    <!-- ============ MUST TRY ============ -->
+    <section id="must-try" class="must" aria-labelledby="must-title">
+      <div class="section-head">
+        <h2 id="must-title" class="cell">Must try <span class="paren" data-try-count>(00)</span></h2>
+        <div class="cell progress">
+          <div class="progress__text"><span data-progress-text>0 of 0 tested</span></div>
+          <div class="progress__bar" aria-hidden="true"><span data-progress-bar></span></div>
+        </div>
+      </div>
+      <p class="must__intro cell">Test cheapest first and change one thing at a time. Taste each new version side by side with the current one, then tick it off. Your ticks are saved in this browser.</p>
+      <div class="rounds" data-rounds></div>
+    </section>
+
+    <!-- ============ BASICS ============ -->
+    <section id="basics" class="basics" aria-labelledby="basics-title">
+      <div class="section-head">
+        <h2 id="basics-title" class="cell">Basics</h2>
+        <p class="cell section-head__note">The shot, the milk, the foam, and the syrups everything else is built on.</p>
+      </div>
+
+      <div class="basics__grid">
+        <!-- Shot timer -->
+        <div class="cell tool" id="shot">
+          <p class="eyebrow">(Shot timer)</p>
+          <h3 class="tool__title">Dial in the shot</h3>
+          <div class="calc">
+            <label class="calc__field">
+              <span>Dose in</span>
+              <input type="range" min="14" max="22" step="0.5" value="18" data-dose>
+              <output data-dose-out>18 g</output>
+            </label>
+            <label class="calc__field">
+              <span>Ratio</span>
+              <input type="range" min="1.5" max="2.5" step="0.1" value="2" data-ratio>
+              <output data-ratio-out>1 : 2.0</output>
+            </label>
+            <p class="calc__result">Stop the shot at <strong data-yield>36 g</strong></p>
+          </div>
+
+          <div class="timer" data-timer>
+            <div class="timer__read" aria-live="off"><span data-timer-read>0.0</span><small>s</small></div>
+            <div class="timer__track" aria-hidden="true">
+              <span class="timer__zone"></span>
+              <span class="timer__fill" data-timer-fill></span>
+              <span class="timer__tick" style="--at:0">0</span>
+              <span class="timer__tick" style="--at:.625">25</span>
+              <span class="timer__tick" style="--at:.75">30</span>
+              <span class="timer__tick" style="--at:1">40</span>
+            </div>
+            <div class="timer__btns">
+              <button type="button" class="btn btn--solid" data-timer-toggle>Start</button>
+              <button type="button" class="btn" data-timer-reset>Reset</button>
+            </div>
+            <p class="timer__verdict" aria-live="polite" data-timer-verdict>Start the timer when you start the shot. Stop it when the scale reads <span data-yield-inline>36 g</span>.</p>
+          </div>
+        </div>
+
+        <!-- Fundamentals -->
+        <div class="cell prose">
+          <p class="eyebrow">(Dialing in)</p>
+          <ol class="steps-plain">
+            <li>Weigh 18 g of ground coffee into the basket, level it and tamp evenly.</li>
+            <li>Put the cup on a scale. Start the shot and the timer together.</li>
+            <li>Stop at 36 g and check the time.</li>
+            <li>Under 25 seconds and sour or thin: grind finer. Over 30 seconds and bitter or harsh: grind coarser.</li>
+            <li>Taste straight shots while dialing in, not lattes. Milk and sugar hide problems.</li>
+            <li>Re-check every morning, and whenever you open a new bag of beans.</li>
+          </ol>
+        </div>
+
+        <div class="cell prose">
+          <p class="eyebrow">(Sweet, milky drinks)</p>
+          <ul class="list-plain">
+            <li>Try a shorter shot for sweet drinks: 18 g in, 30 g out. A more concentrated shot cuts through milk and sugar.</li>
+            <li>Pour hot espresso onto the sweetener first and stir before adding ice or milk. Sugar, condensed milk and chocolate dissolve badly in cold liquid.</li>
+            <li>Use bigger ice cubes, and fewer of them. Melting ice is the main reason iced lattes taste thin. Treat 100 g as the maximum.</li>
+            <li>Steam milk to 55–65 °C.</li>
+          </ul>
+        </div>
+
+        <div class="cell prose">
+          <p class="eyebrow">(Cold foam rules)</p>
+          <ul class="list-plain">
+            <li>Cream must outweigh milk. More cream gives a thick foam that floats; more milk gives a thin foam that sinks.</li>
+            <li>Don't skip the milk entirely. A little milk stops the cream turning into stiff whipped cream.</li>
+            <li>Keep cream fridge-cold. Froth until thick but still pourable, then pour slowly on top.</li>
+            <li>All-purpose cream works in almost every foam here.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="section-head section-head--sub">
+        <h3 class="cell">Batch syrups &amp; sauces</h3>
+        <p class="cell section-head__note">Make these ahead. Keep them in the fridge in a squeeze bottle.</p>
+      </div>
+      <ul class="syrups" data-syrups></ul>
+    </section>
+
+    <!-- ============ FOOTER ============ -->
+    <footer class="footer" id="credits">
+      <div class="footer__word" aria-hidden="true"><span data-site-name>Kape</span></div>
+      <div class="footer__row">
+        <div class="cell">
+          <p class="eyebrow">(Recipes)</p>
+          <p>House menu recipes and new drinks follow <a href="https://www.tiktok.com/@flairshotscafe" target="_blank" rel="noopener">@flairshotscafe</a>; each recipe links to its original video. Classics use standard café specs, with notes from <a href="https://www.jameshoffmann.co.uk/weird-coffee-science/caffe-shakerato" target="_blank" rel="noopener">James Hoffmann</a>, <a href="https://vickypham.com/blog/vietnamese-iced-coconut-milk-coffee-ca-phe-dua/" target="_blank" rel="noopener">Vicky Pham</a>, <a href="https://www.juliusmeinl.com/your-perfect-cup/classic-recipes" target="_blank" rel="noopener">Julius Meinl</a> and <a href="https://en.wikipedia.org/wiki/Kapeng_barako" target="_blank" rel="noopener">Wikipedia</a>. Espresso targets from La Marzocco, Clive Coffee and Origin Coffee.</p>
+        </div>
+        <div class="cell">
+          <p class="eyebrow">(Photos)</p>
+          <p data-photo-credits>Photos from Unsplash.</p>
+        </div>
+        <div class="cell footer__end">
+          <a href="#top" class="link-btn">Back to top ↑</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- ============ RECIPE DETAIL ============ -->
+  <div class="detail" role="dialog" aria-modal="true" aria-labelledby="detail-name" hidden data-detail>
+    <div class="detail__sheet" data-detail-sheet></div>
+  </div>
+
+  <div class="toast" role="status" aria-live="polite" data-toast></div>
+
+  <script src="photos.js?v=5"></script>
+  <script src="recipes.js?v=5"></script>
+  <script src="app.js?v=5"></script>
+</body>
+</html>
