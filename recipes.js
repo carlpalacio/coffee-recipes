@@ -31,7 +31,7 @@ window.RECIPES = [
      own cup, ingredients and method. The site shows a Hot / Iced switch.
      ------------------------------------------------------------------ */
   {
-    slug: 'espresso', name: 'Espresso', col: 'menu', price: 90, serve: ['hot'], style: 'Black',
+    slug: 'espresso', name: 'Espresso', col: 'menu', serve: ['hot'], style: 'Black',
     shots: 2, time: 2, needs: ['Scale'],
     desc: 'A straight double shot: 18 g of coffee in, 36 g out, in 25 to 30 seconds. Every other drink on the menu starts from this shot, so dial it in before you open.',
     builds: {
@@ -50,7 +50,7 @@ window.RECIPES = [
     source: { by: 'classic', note: 'Targets from La Marzocco, Clive Coffee and Origin Coffee.' },
   },
   {
-    slug: 'americano', name: 'Americano', col: 'menu', price: 100, serve: ['hot', 'iced'], style: 'Black',
+    slug: 'americano', name: 'Americano', col: 'menu', serve: ['hot', 'iced'], style: 'Black',
     shots: 2, time: 2, needs: [],
     desc: 'A double shot lengthened with water. Unsweetened by default, with brown sugar syrup free on request.',
     builds: {
@@ -76,7 +76,7 @@ window.RECIPES = [
     source: { by: 'classic' },
   },
   {
-    slug: 'cappuccino', name: 'Cappuccino', col: 'menu', price: 130, serve: ['hot'], style: 'Milk',
+    slug: 'cappuccino', name: 'Cappuccino', col: 'menu', serve: ['hot'], style: 'Milk',
     shots: 2, time: 3, needs: ['Steam wand'],
     desc: 'A double shot under milk steamed with a deeper, airier foam than a latte. Hot only.',
     builds: {
@@ -96,7 +96,7 @@ window.RECIPES = [
     source: { by: 'classic' },
   },
   {
-    slug: 'mocha', name: 'Mocha', col: 'menu', price: 140, serve: ['hot', 'iced'], style: 'Milk',
+    slug: 'mocha', name: 'Mocha', col: 'menu', serve: ['hot', 'iced'], style: 'Milk',
     shots: 2, time: 3, needs: [],
     desc: 'House chocolate sauce and brown sugar syrup stirred into a double shot, then topped with steamed milk or poured over iced milk.',
     builds: {
@@ -131,7 +131,7 @@ window.RECIPES = [
     source: { by: 'flair', note: 'His method with our chocolate sauce.' },
   },
   {
-    slug: 'latte', name: 'Latte', col: 'menu', price: 140, serve: ['hot', 'iced'], style: 'Milk',
+    slug: 'latte', name: 'Latte', col: 'menu', serve: ['hot', 'iced'], style: 'Milk',
     shots: 2, time: 3, needs: ['Steam wand', 'Frother'],
     desc: 'The house latte, sweetened with brown sugar syrup. For iced, the syrup and a pinch of salt are frothed into the shot first, so it pours over the milk with a creamy head.',
     builds: {
@@ -163,7 +163,7 @@ window.RECIPES = [
     source: { by: 'flair', note: 'Iced uses his frothed-shot method with our brown sugar syrup.' },
   },
   {
-    slug: 'spanish-latte', name: 'Spanish Latte', col: 'menu', price: 150, serve: ['hot', 'iced'], style: 'Cream top',
+    slug: 'spanish-latte', name: 'Spanish Latte', col: 'menu', serve: ['hot', 'iced'], style: 'Cream top',
     shots: 2, time: 4, needs: ['Steam wand', 'Frother'],
     desc: 'Espresso whipped with condensed milk. Iced, it goes over cold milk under a salted cream foam; hot, it’s a sweet, creamy latte.',
     builds: {
@@ -199,7 +199,7 @@ window.RECIPES = [
     source: { by: 'flair', url: TT + '7683442526837067028' },
   },
   {
-    slug: 'sea-salt-latte', name: 'Sea Salt Latte', col: 'menu', price: 150, serve: ['iced', 'hot'], style: 'Cream top',
+    slug: 'sea-salt-latte', name: 'Sea Salt Latte', col: 'menu', serve: ['iced', 'hot'], style: 'Cream top',
     shots: 2, time: 3, needs: ['Frother'],
     desc: 'A latte under a thick cream foam made with condensed milk and a pinch of salt. The salt rounds out the sweetness, so the foam tastes close to salted caramel. Best iced.',
     builds: {

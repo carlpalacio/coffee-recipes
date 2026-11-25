@@ -25,7 +25,6 @@
     r.defaultBuild = r.defaultBuild || (r.builds.iced ? 'iced' : r.buildKeys[0]);
   });
   const BY = Object.fromEntries(RECIPES.map(r => [r.slug, r]));
-  const peso = n => `₱${n}`;
 
   const $ = (s, el = document) => el.querySelector(s);
   const $$ = (s, el = document) => [...el.querySelectorAll(s)];
@@ -205,10 +204,9 @@
       ? `<span class="card__flag card__flag--try ${isTried ? 'card__flag--tried' : ''}">${isTried ? 'Tested' : 'Must try'}</span>`
       : `<span class="card__flag">${COL_LABEL[r.col]}</span>`;
     const serve = r.serve.map(s => s[0].toUpperCase() + s.slice(1)).join(' / ');
-    const right = r.price ? `${serve} · <b class="card__price">${peso(r.price)}</b>` : serve;
     return `<li class="card reveal" style="--d:${(i % 4) * 70}ms">
       <a class="card__link" href="#/${r.slug}" data-slug="${r.slug}">
-        <div class="card__top">${flag}<span>${right}</span></div>
+        <div class="card__top">${flag}<span>${serve}</span></div>
         <div class="card__media">${photoHTML(r.slug, 360)}</div>
         <div class="card__foot">
           <div><span class="card__num">(${pad(r.n)})</span><span class="card__name">${esc(r.name)}</span></div>
@@ -365,7 +363,6 @@
     const tags = [
       `<span class="tag ${r.col === 'try' ? (isTried ? 'tag--tried' : 'tag--try') : ''}">${r.col === 'try' && isTried ? 'Tested' : COL_LABEL[r.col]}</span>`,
       `<span class="tag">${esc(r.style)}</span>`,
-      r.price ? `<span class="tag tag--price">${peso(r.price)}</span>` : '',
     ].join('');
 
     return `
@@ -744,7 +741,7 @@
           <span class="menu__thumb">${photoHTML(r.slug, 160)}</span>
           <span class="menu__name">${esc(r.name)}</span>
           <span class="menu__ways">${ways}</span>
-          <span class="menu__price">${peso(r.price)}</span>
+          <span class="dot" aria-hidden="true"></span>
         </a>
       </li>`;
     }).join('');
