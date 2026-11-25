@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://images.unsplash.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=5">
+  <link rel="stylesheet" href="styles.css?v=6">
 </head>
 <body>
   <!-- Coffee duotone: every photo is mapped onto espresso → #987654 → cream so the set reads as one series -->
@@ -32,6 +32,7 @@
     <header class="nav" id="top">
       <a class="nav__brand cell" href="#top" aria-label="Kape, back to top"><span data-site-name>Kape</span> <span class="paren" data-total>(00)</span></a>
       <nav class="nav__links cell" aria-label="Sections">
+        <a href="#menu">Menu</a>
         <a href="#index">Index</a>
         <a href="#must-try">Must try</a>
         <a href="#basics">Basics</a>
@@ -47,9 +48,21 @@
       <div class="hero__row">
         <p class="cell hero__intro">A working recipe book for the bar. The house menu, the new drinks we need to try, and the classics. Every amount is in grams, and every espresso drink starts from the same double shot.</p>
         <div class="cell spec"><span class="spec__label">(Dose → Yield)</span><span class="spec__value">18 g → 36 g</span></div>
-        <div class="cell spec"><span class="spec__label">(Shot time)</span><span class="spec__value">25–30 s</span></div>
-        <div class="cell spec spec--wide-hide"><span class="spec__label">(Water)</span><span class="spec__value">93–96 °C</span></div>
+        <div class="cell spec spec--wide-hide"><span class="spec__label">(Shot time)</span><span class="spec__value">25–30 s</span></div>
+        <div class="cell spec"><span class="spec__label">(Cups)</span><span class="spec__value">300 ml hot<br>380 ml iced</span></div>
       </div>
+    </section>
+
+    <!-- ============ MENU ============ -->
+    <section id="menu" class="menu" aria-labelledby="menu-title">
+      <div class="section-head">
+        <h2 id="menu-title" class="cell">Menu <span class="paren" data-menu-count>(07)</span></h2>
+        <div class="cell menu__aside">
+          <p class="section-head__note">Prices in pesos. Hot drinks go in the 300 ml cup, iced in the 380 ml cup. Tap a drink for its hot and iced recipes.</p>
+          <a class="link-btn" href="#batch-sea-salt-foam">Sea salt foam batch ↓</a>
+        </div>
+      </div>
+      <ol class="menu__list" data-menu></ol>
     </section>
 
     <!-- ============ INDEX ============ -->
@@ -205,8 +218,8 @@
 
   <div class="toast" role="status" aria-live="polite" data-toast></div>
 
-  <script src="photos.js?v=5"></script>
-  <script src="recipes.js?v=5"></script>
-  <script src="app.js?v=5"></script>
+  <script src="photos.js?v=6"></script>
+  <script src="recipes.js?v=6"></script>
+  <script src="app.js?v=6"></script>
 </body>
 </html>

@@ -25,61 +25,223 @@ const SHOT = 'Pull a double shot (18 g in, 36 g out)';
 const TT = 'https://www.tiktok.com/@flairshotscafe/video/';
 
 window.RECIPES = [
-  /* =========================== HOUSE MENU =========================== */
+  /* =========================== HOUSE MENU ===========================
+     The opening menu. Cups: 300 ml for hot drinks, 380 ml for iced.
+     Drinks served both ways have `builds: { hot, iced }`, each with its
+     own cup, ingredients and method. The site shows a Hot / Iced switch.
+     ------------------------------------------------------------------ */
   {
-    slug: 'sea-salt-latte', name: 'Sea Salt Latte', col: 'menu', serve: ['iced'], style: 'Cream top',
-    shots: 2, time: 4, needs: ['Frother'],
-    desc: 'An iced latte under a thick cream foam made with condensed milk and a pinch of salt. The salt rounds out the sweetness, so the foam tastes close to salted caramel.',
-    parts: [
-      { title: 'Foam', items: [['30 g', 'All-purpose cream', '25–35 g per drink works'], ['20 g', 'Condensed milk'], ['Pinch', 'Salt']] },
-      { title: 'Glass', items: [['~100 g', 'Ice'], ['150 ml', 'Milk'], ['2 shots', 'Espresso']] },
-    ],
-    steps: [
-      'Froth the all-purpose cream, condensed milk and salt until thick but still pourable.',
-      'Fill the glass with ice and pour in the milk.',
-      [SHOT + ' and pour it over the milk.', 28],
-      'Pour the foam slowly over the top so it floats.',
-    ],
-    notes: ['Cream must outweigh milk in the foam, or it sinks.', 'Shares its foam with the Vietnamese Salt Coffee. Taste both and keep one on the menu.'],
-    source: { by: 'flair', url: TT + '7518350400894848277', note: 'From his caption; the video has music only.' },
+    slug: 'espresso', name: 'Espresso', col: 'menu', price: 90, serve: ['hot'], style: 'Black',
+    shots: 2, time: 2, needs: ['Scale'],
+    desc: 'A straight double shot: 18 g of coffee in, 36 g out, in 25 to 30 seconds. Every other drink on the menu starts from this shot, so dial it in before you open.',
+    builds: {
+      hot: {
+        cup: 'Espresso cup',
+        parts: [{ title: 'Shot', items: [['18 g', 'Fine-ground coffee'], ['36 g', 'Espresso out', '1 : 2 ratio']] }],
+        steps: [
+          'Weigh the coffee into the basket, level it and tamp evenly.',
+          ['Put the cup on a scale. Start the shot and the timer together.', 28],
+          'Stop at 36 g and check the time.',
+          'Under 25 seconds and sour: grind finer. Over 30 seconds and bitter: grind coarser.',
+        ],
+      },
+    },
+    notes: ['A double shot is only about 40 ml, so serve it in a small espresso cup rather than the 300 ml cup.', 'Water at 93–96 °C. Taste straight shots while dialing in, not lattes.'],
+    source: { by: 'classic', note: 'Targets from La Marzocco, Clive Coffee and Origin Coffee.' },
   },
   {
-    slug: 'iced-spanish-latte', name: 'Iced Spanish Latte', col: 'menu', serve: ['iced'], style: 'Cream top',
-    shots: 4, time: 4, needs: ['Frother'],
-    desc: 'Four shots whipped with condensed milk, poured over cold milk and capped with a salted condensed-milk foam. Strong and coffee-forward, sweet without tasting of syrup.',
-    parts: [
-      { title: 'Espresso mix', items: [['4 shots', 'Espresso', 'a quad, 36 g beans'], ['30 g', 'Condensed milk']] },
-      { title: 'Cold foam', items: [['15 g', 'Condensed milk'], ['Pinch', 'Salt'], ['~20 g', 'All-purpose cream']] },
-      { title: 'Glass', items: [['Lots', 'Ice'], ['130 g', 'Milk']] },
+    slug: 'americano', name: 'Americano', col: 'menu', price: 100, serve: ['hot', 'iced'], style: 'Black',
+    shots: 2, time: 2, needs: [],
+    desc: 'A double shot lengthened with water. Unsweetened by default, with brown sugar syrup free on request.',
+    builds: {
+      hot: {
+        cup: '300 ml cup',
+        parts: [{ title: 'Cup', items: [['220 g', 'Hot water', 'about 90 °C'], ['2 shots', 'Espresso']] }],
+        steps: [
+          'Pour the hot water into the 300 ml cup first.',
+          [SHOT + ' on top of the water so the crema stays.', 28],
+          'It should sit about 1 cm below the rim.',
+        ],
+      },
+      iced: {
+        cup: '380 ml cup',
+        parts: [{ title: 'Cup', items: [['100 g', 'Ice'], ['200 g', 'Cold water'], ['2 shots', 'Espresso']] }],
+        steps: [
+          'Fill the 380 ml cup with the ice and cold water.',
+          [SHOT + ' and pour it over the top.', 28],
+        ],
+      },
+    },
+    notes: ['Offer brown sugar syrup on request (15 g).'],
+    source: { by: 'classic' },
+  },
+  {
+    slug: 'cappuccino', name: 'Cappuccino', col: 'menu', price: 130, serve: ['hot'], style: 'Milk',
+    shots: 2, time: 3, needs: ['Steam wand'],
+    desc: 'A double shot under milk steamed with a deeper, airier foam than a latte. Hot only.',
+    builds: {
+      hot: {
+        cup: '300 ml cup',
+        parts: [{ title: 'Cup', items: [['2 shots', 'Espresso'], ['160 g', 'Milk', 'cold from the fridge'], ['10 g', 'Brown sugar syrup', 'optional']] }],
+        steps: [
+          'If sweetening, put the syrup in the 300 ml cup.',
+          [SHOT + ' into the cup.', 28],
+          'Purge the steam wand. Stretch the milk for 4 to 6 seconds so it grows by about half.',
+          'Keep steaming to 55–65 °C. Tap and swirl the jug until the milk looks glossy.',
+          'Pour into the centre of the shot and finish with a dome of foam, about 1 cm below the rim.',
+        ],
+      },
+    },
+    notes: ['There’s no Flair Shots cappuccino, so this is the standard café spec, sized for the 300 ml cup.'],
+    source: { by: 'classic' },
+  },
+  {
+    slug: 'mocha', name: 'Mocha', col: 'menu', price: 140, serve: ['hot', 'iced'], style: 'Milk',
+    shots: 2, time: 3, needs: [],
+    desc: 'House chocolate sauce and brown sugar syrup stirred into a double shot, then topped with steamed milk or poured over iced milk.',
+    builds: {
+      hot: {
+        cup: '300 ml cup',
+        parts: [
+          { title: 'Cup', items: [['25 g', 'Chocolate sauce', 'see Batch syrups'], ['15 g', 'Brown sugar syrup'], ['2 shots', 'Espresso']] },
+          { title: 'Milk', items: [['170 g', 'Milk', 'steamed']] },
+        ],
+        steps: [
+          'Put the chocolate sauce and brown sugar syrup in the 300 ml cup.',
+          [SHOT + ' onto them and stir until smooth.', 28],
+          'Steam the milk with a little air to 55–65 °C.',
+          'Pour it in. Finish with a chocolate drizzle if you like.',
+        ],
+      },
+      iced: {
+        cup: '380 ml cup',
+        parts: [
+          { title: 'Coffee', items: [['25 g', 'Chocolate sauce', 'see Batch syrups'], ['15 g', 'Brown sugar syrup'], ['2 shots', 'Espresso']] },
+          { title: 'Cup', items: [['100 g', 'Ice'], ['180 g', 'Milk']] },
+        ],
+        steps: [
+          'Put the chocolate sauce and brown sugar syrup in a small jug.',
+          [SHOT + ' onto them and stir until smooth.', 28],
+          'Fill the 380 ml cup with the ice and milk.',
+          'Pour the mocha on top.',
+        ],
+      },
+    },
+    notes: ['A darker chocolate makes it less sweet.'],
+    source: { by: 'flair', note: 'His method with our chocolate sauce.' },
+  },
+  {
+    slug: 'latte', name: 'Latte', col: 'menu', price: 140, serve: ['hot', 'iced'], style: 'Milk',
+    shots: 2, time: 3, needs: ['Steam wand', 'Frother'],
+    desc: 'The house latte, sweetened with brown sugar syrup. For iced, the syrup and a pinch of salt are frothed into the shot first, so it pours over the milk with a creamy head.',
+    builds: {
+      hot: {
+        cup: '300 ml cup',
+        parts: [{ title: 'Cup', items: [['20 g', 'Brown sugar syrup'], ['2 shots', 'Espresso'], ['190 g', 'Milk', 'steamed']] }],
+        steps: [
+          'Put the brown sugar syrup in the 300 ml cup.',
+          [SHOT + ' onto it and stir.', 28],
+          'Steam the milk with 2 to 3 seconds of air to 55–65 °C, for a thin, glossy foam.',
+          'Pour in and finish with latte art, about 1 cm below the rim.',
+        ],
+      },
+      iced: {
+        cup: '380 ml cup',
+        parts: [
+          { title: 'Coffee', items: [['30 g', 'Brown sugar syrup'], ['Pinch', 'Salt'], ['2 shots', 'Espresso']] },
+          { title: 'Cup', items: [['100 g', 'Ice'], ['180 g', 'Milk']] },
+        ],
+        steps: [
+          'Put the brown sugar syrup and salt in a small jug.',
+          [SHOT + ' straight onto them.', 28],
+          'Froth until thick and foamy.',
+          'Fill the 380 ml cup with the ice and milk, then pour the espresso on top.',
+        ],
+      },
+    },
+    notes: ['Brown sugar syrup is 1 : 1. See Batch syrups in Basics.'],
+    source: { by: 'flair', note: 'Iced uses his frothed-shot method with our brown sugar syrup.' },
+  },
+  {
+    slug: 'spanish-latte', name: 'Spanish Latte', col: 'menu', price: 150, serve: ['hot', 'iced'], style: 'Cream top',
+    shots: 2, time: 4, needs: ['Steam wand', 'Frother'],
+    desc: 'Espresso whipped with condensed milk. Iced, it goes over cold milk under a salted cream foam; hot, it’s a sweet, creamy latte.',
+    builds: {
+      hot: {
+        cup: '300 ml cup',
+        parts: [{ title: 'Cup', items: [['30 g', 'Condensed milk'], ['2 shots', 'Espresso'], ['180 g', 'Milk', 'steamed']] }],
+        steps: [
+          'Put the condensed milk in the 300 ml cup.',
+          [SHOT + ' onto it and stir until smooth.', 28],
+          'Steam the milk with a little air to 55–65 °C.',
+          'Pour it in, about 1 cm below the rim.',
+        ],
+      },
+      iced: {
+        cup: '380 ml cup',
+        parts: [
+          { title: 'Espresso mix', items: [['2 shots', 'Espresso'], ['30 g', 'Condensed milk']] },
+          { title: 'Cold foam', items: [['35 g', 'Sea salt foam base', 'from the batch']] },
+          { title: 'Cup', items: [['100 g', 'Ice'], ['140 g', 'Milk']] },
+        ],
+        steps: [
+          [SHOT + ' onto the condensed milk and mix until smooth and creamy.', 28],
+          'Froth 35 g of the sea salt foam base until thick but still pourable.',
+          'Fill the 380 ml cup with the ice and milk.',
+          'Pour in the espresso mix, then top with the cold foam.',
+        ],
+      },
+    },
+    notes: [
+      'The cold foam is the same base as the Sea Salt Latte, so there’s only one foam to prep. His own foam is 15 g condensed milk, 20 g all-purpose cream and a pinch of salt, which is nearly the same ratio.',
+      'His original uses 4 shots. The menu version uses 2.',
     ],
-    steps: [
-      ['Pull a quad shot and mix in the 30 g condensed milk until smooth and creamy.', 28],
-      'Froth the 15 g condensed milk, salt and all-purpose cream until thick.',
-      'Fill the glass with ice and add the milk.',
-      'Pour in the espresso mix, then top with the cold foam.',
-    ],
-    notes: ['2-shot version: use a double shot and keep everything else the same. Taste his 4-shot version first.', 'For a sweeter build, try 18 g in, 30 g out. The shorter shot cuts through the condensed milk.'],
     source: { by: 'flair', url: TT + '7683442526837067028' },
   },
   {
-    slug: 'brown-sugar-latte', name: 'Brown Sugar Latte', col: 'menu', serve: ['iced'], style: 'Frothed',
+    slug: 'sea-salt-latte', name: 'Sea Salt Latte', col: 'menu', price: 150, serve: ['iced', 'hot'], style: 'Cream top',
     shots: 2, time: 3, needs: ['Frother'],
-    desc: 'The house latte. Brown sugar syrup and a pinch of salt are frothed straight into the shot, which gives the espresso a creamy head before it goes over cold milk.',
-    parts: [
-      { title: 'Coffee', items: [['30 g', 'Brown sugar syrup'], ['Pinch', 'Salt'], ['2 shots', 'Espresso']] },
-      { title: 'Glass', items: [['100 g', 'Ice'], ['150 g', 'Milk']] },
+    desc: 'A latte under a thick cream foam made with condensed milk and a pinch of salt. The salt rounds out the sweetness, so the foam tastes close to salted caramel. Best iced.',
+    builds: {
+      hot: {
+        cup: '300 ml cup',
+        parts: [
+          { title: 'Foam', items: [['50 g', 'Sea salt foam base', 'from the batch']] },
+          { title: 'Cup', items: [['2 shots', 'Espresso'], ['150 g', 'Milk', 'steamed']] },
+        ],
+        steps: [
+          [SHOT + ' into the 300 ml cup.', 28],
+          'Steam the milk with very little air to 55–60 °C and pour it in. Slightly cooler milk holds the foam longer.',
+          'Shake the foam base, then froth 50 g until thick but still pourable.',
+          'Pour the foam slowly over the top.',
+        ],
+      },
+      iced: {
+        cup: '380 ml cup',
+        parts: [
+          { title: 'Foam', items: [['50 g', 'Sea salt foam base', 'from the batch']] },
+          { title: 'Cup', items: [['100 g', 'Ice'], ['140 ml', 'Milk'], ['2 shots', 'Espresso']] },
+        ],
+        steps: [
+          'Shake the foam base, then froth 50 g in a jug until thick but still pourable.',
+          'Fill the 380 ml cup with the ice and pour in the milk.',
+          [SHOT + ' and pour it over the milk.', 28],
+          'Pour the foam slowly over the top so it floats. Leave about 2 cm for it.',
+        ],
+      },
+    },
+    defaultBuild: 'iced',
+    notes: [
+      'No batch made? Froth 30 g all-purpose cream, 20 g condensed milk and a pinch of salt instead.',
+      'After the first one, check the fill line. If the foam spills over, drop the milk by 10 ml; if the cup looks short, add 10 ml.',
+      'Cream must outweigh milk in the foam, or it sinks.',
     ],
-    steps: [
-      'Put the brown sugar syrup and salt in a cup.',
-      [SHOT + ' straight onto them.', 28],
-      'Froth until thick and foamy.',
-      'Fill the glass with ice and milk, then pour the espresso on top.',
-    ],
-    notes: ['Brown sugar syrup is 1:1. See Batch syrups in Basics.'],
-    source: { by: 'flair', note: 'His frothed-shot method with our brown sugar syrup.' },
+    source: { by: 'flair', url: TT + '7518350400894848277', note: 'From his caption; the video has music only.' },
   },
+
+  /* =========================== MUST TRY =========================== */
   {
-    slug: 'honey-hush-latte', name: 'Honey Hush Latte', col: 'menu', serve: ['iced'], style: 'Frothed',
+    slug: 'honey-hush-latte', name: 'Honey Hush Latte', col: 'try', serve: ['iced'], style: 'Frothed',
     shots: 2, time: 3, needs: ['Frother'],
     desc: 'Honey, vanilla and a pinch of salt frothed into a double shot and layered over oat milk. Softer and more floral than the brown sugar latte.',
     parts: [
@@ -92,62 +254,11 @@ window.RECIPES = [
       'Fill a serving glass with ice and pour in the oat milk.',
       'Top with the honey espresso.',
     ],
-    notes: ['Taste side by side with the Brown Sugar Latte to pick the menu latte.'],
+    notes: ['Taste side by side with the menu Latte.'],
     source: { by: 'flair', url: TT + '7700911958869953813' },
   },
   {
-    slug: 'mocha', name: 'Mocha', col: 'menu', serve: ['iced', 'hot'], style: 'Milk',
-    shots: 2, time: 3, needs: [],
-    desc: 'House chocolate sauce and brown sugar syrup stirred into a double shot and poured over iced milk. A darker chocolate makes it less sweet.',
-    parts: [
-      { title: 'Coffee', items: [['25 g', 'Chocolate sauce', 'see Batch syrups'], ['15 g', 'Brown sugar syrup'], ['2 shots', 'Espresso']] },
-      { title: 'Glass', items: [['100 g', 'Ice'], ['150 g', 'Milk']] },
-    ],
-    steps: [
-      'Put the chocolate sauce and brown sugar syrup in a cup.',
-      [SHOT + ' onto them and stir until smooth.', 28],
-      'Fill the glass with ice and milk.',
-      'Pour the mocha on top.',
-    ],
-    notes: ['Hot: skip the ice and steam 180 g milk to 60 °C instead.'],
-    source: { by: 'flair', note: 'His method with our chocolate sauce.' },
-  },
-  {
-    slug: 'cappuccino', name: 'Cappuccino', col: 'menu', serve: ['hot'], style: 'Milk',
-    shots: 2, time: 3, needs: ['Steam wand'],
-    desc: 'A double shot under milk steamed with a deeper, airier foam than a latte. Roughly equal parts espresso, milk and foam, in a 6 oz cup.',
-    parts: [
-      { title: 'Cup', items: [['2 shots', 'Espresso'], ['120 g', 'Milk'], ['10 g', 'Brown sugar syrup', 'optional']] },
-    ],
-    steps: [
-      'If sweetening, put the syrup in a 6 oz (180 ml) cup.',
-      [SHOT + ' into the cup.', 28],
-      'Purge the steam wand. Stretch the milk for 3 to 5 seconds to build about 1.5 cm of foam.',
-      'Keep steaming to 55–65 °C. Tap and swirl the jug until the milk looks glossy.',
-      'Pour into the centre of the shot and finish with a dome of foam.',
-    ],
-    notes: ['There is no Flair Shots cappuccino, so this is the standard café spec.'],
-    source: { by: 'classic' },
-  },
-  {
-    slug: 'americano', name: 'Americano', col: 'menu', serve: ['hot', 'iced'], style: 'Black',
-    shots: 2, time: 2, needs: [],
-    desc: 'A double shot lengthened with water. Unsweetened by default, with syrup free on request.',
-    parts: [
-      { title: 'Hot', items: [['2 shots', 'Espresso'], ['150 g', 'Hot water', 'about 90 °C']] },
-      { title: 'Iced', items: [['2 shots', 'Espresso'], ['150 g', 'Cold water'], ['100 g', 'Ice']] },
-    ],
-    steps: [
-      'Hot: pour the hot water into the cup first.',
-      [SHOT + ' on top of the water so the crema stays.', 28],
-      'Iced: fill a glass with ice and cold water, then pour the shot over.',
-      'Offer brown sugar syrup on request.',
-    ],
-    notes: [],
-    source: { by: 'classic' },
-  },
-  {
-    slug: 'brown-sugar-cream-latte', name: 'Brown Sugar Cream Latte', col: 'menu', serve: ['iced'], style: 'Milk',
+    slug: 'brown-sugar-cream-latte', name: 'Brown Sugar Cream Latte', col: 'try', serve: ['iced'], style: 'Milk',
     shots: 2, time: 3, needs: [],
     desc: 'Our own tested recipe: brown sugar syrup and milk with a splash of cream for a fuller body, and no foam on top.',
     parts: [
@@ -162,8 +273,6 @@ window.RECIPES = [
     notes: ['Taste whipping cream against all-purpose cream. All-purpose costs less.'],
     source: { by: 'house' },
   },
-
-  /* =========================== MUST TRY =========================== */
   {
     slug: 'orange-mocha', name: 'Orange Mocha', col: 'try', serve: ['hot'], style: 'Milk',
     shots: 2, time: 5, needs: ['Steam wand', 'Grater'],
@@ -733,22 +842,6 @@ window.RECIPES = [
 
   /* =========================== CLASSICS =========================== */
   {
-    slug: 'espresso', name: 'Espresso', col: 'classic', serve: ['hot'], style: 'Black',
-    shots: 2, time: 2, needs: ['Scale'],
-    desc: 'The base of nearly every drink here: 18 g of coffee in, 36 g out, in 25 to 30 seconds. Dial it in every morning.',
-    parts: [
-      { title: 'Shot', items: [['18 g', 'Fine-ground coffee'], ['36 g', 'Espresso out', '1 : 2 ratio']] },
-    ],
-    steps: [
-      'Weigh the coffee into the basket, level it and tamp evenly.',
-      ['Put the cup on a scale. Start the shot and the timer together.', 28],
-      'Stop at 36 g and check the time.',
-      'Under 25 seconds and sour: grind finer. Over 30 seconds and bitter: grind coarser.',
-    ],
-    notes: ['Water at 93–96 °C.', 'Taste straight shots while dialing in, not lattes.'],
-    source: { by: 'classic', note: 'Targets from La Marzocco, Clive Coffee and Origin Coffee.' },
-  },
-  {
     slug: 'flat-white', name: 'Flat White', col: 'classic', serve: ['hot'], style: 'Milk',
     shots: 2, time: 3, needs: ['Steam wand'],
     desc: 'A double shot with a small amount of silky, thinly textured milk. Stronger than a latte and smoother than a cappuccino.',
@@ -974,7 +1067,20 @@ window.RECIPES = [
 
 /* ---------------- Batch syrups & sauces (Basics section) ---------------- */
 window.SYRUPS = [
-  { name: 'Brown sugar syrup', yield: 'about 190 g', items: ['100 g brown sugar', '100 g hot water'], method: 'Stir until the sugar fully dissolves. 1 : 1.', used: ['brown-sugar-latte', 'mocha', 'brown-sugar-cream-latte', 'biscoff-latte', 'shakerato', 'dirty-chai'] },
+  {
+    id: 'batch-sea-salt-foam', name: 'Sea salt foam base', feature: true,
+    perDrink: [[30, 'g', 'all-purpose cream'], [20, 'g', 'condensed milk'], [0.2, 'g', 'fine salt']],
+    batches: [10, 20, 30], batch: 20, unit: 'drinks',
+    method: 'Stir in a jug (don’t froth) until the condensed milk and salt dissolve. Pour into a clean squeeze bottle or sealed jar, label it with the date, and keep it at 4 °C or colder. Shake before each use and froth to order.',
+    notes: [
+      'Per drink: 50 g for a Sea Salt Latte, 35 g for an iced Spanish Latte.',
+      'Keeps up to 7 days from opening the cream, which is Alaska’s storage note for opened all-purpose cream. Check your own pack’s label.',
+      'Selling fewer than 20 a week? Make the 10-drink batch twice a week instead, so the foam stays fresh and whips thick.',
+      'Shopping for 20 drinks: 600 g all-purpose cream (3 × 250 ml packs, with some left over) and 400 g condensed milk.',
+    ],
+    used: ['sea-salt-latte', 'spanish-latte', 'vietnamese-salt-coffee'],
+  },
+  { name: 'Brown sugar syrup', yield: 'about 190 g', items: ['100 g brown sugar', '100 g hot water'], method: 'Stir until the sugar fully dissolves. 1 : 1.', used: ['latte', 'mocha', 'americano', 'brown-sugar-cream-latte', 'biscoff-latte', 'shakerato', 'dirty-chai'] },
   { name: 'Chocolate sauce', yield: 'about 8 drinks', items: ['100 g chocolate', '100 g hot milk'], method: 'Melt the chocolate into the hot milk and stir until smooth.', used: ['mocha', 'orange-mocha', 'smores-mocha'] },
   { name: 'Orange syrup', yield: 'about 5 drinks', items: ['Juice of 1 orange', '80 g brown sugar', '40 g water'], method: 'Mix in a pan and simmer until syrupy.', used: ['orange-mocha', 'mont-blanc'] },
   { name: 'Toasted marshmallow syrup', yield: '5–6 drinks', items: ['Handful of marshmallows', '80 g water', '80 g brown sugar'], method: 'Air-fry the marshmallows 5–8 min. Dissolve the sugar in the water, add the marshmallows and stir until melted.', used: ['campfire-shaken', 'smores-mocha'] },
@@ -984,19 +1090,23 @@ window.SYRUPS = [
 
 /* ---------------- Testing plan (Must try section) ---------------- */
 window.ROUNDS = [
-  { title: 'Round 1', sub: 'Your menu drinks', items: [
+  { title: 'Round 1', sub: 'Opening menu', items: [
     { key: 'dial-in', label: 'Dial in the shot', note: '18 g → 36 g in 25–30 s', href: '#shot' },
-    { slug: 'sea-salt-latte', note: 'his recipe, APC foam' },
-    { slug: 'iced-spanish-latte', note: '4-shot vs 2-shot' },
-    { slug: 'brown-sugar-latte', note: 'his frothed method' },
-    { slug: 'honey-hush-latte', note: 'vs brown sugar latte' },
+    { key: 'sea-salt-batch', label: 'Make the sea salt foam batch', note: '20 drinks', href: '#batch-sea-salt-foam' },
+    { slug: 'espresso' },
+    { slug: 'americano', note: 'hot 300 ml and iced 380 ml' },
+    { slug: 'cappuccino', note: 'hot 300 ml' },
+    { slug: 'mocha', note: 'hot and iced' },
+    { slug: 'latte', note: 'hot and iced' },
+    { slug: 'spanish-latte', note: 'hot and iced' },
+    { slug: 'sea-salt-latte', note: 'check the fill line' },
   ] },
-  { title: 'Round 2', sub: 'Using APC and what you stock', items: [
-    { slug: 'mocha', note: 'with your sauce' },
+  { title: 'Round 2', sub: 'Next to try', items: [
+    { slug: 'honey-hush-latte', note: 'vs the menu latte' },
+    { slug: 'brown-sugar-cream-latte', note: 'whipping cream vs APC' },
     { slug: 'chocolate-shaken-espresso' },
     { slug: 'brown-sugar-shaken' },
-    { slug: 'brown-sugar-cream-latte', note: 'whipping cream vs APC' },
-    { slug: 'vietnamese-salt-coffee', note: 'vs sea salt latte, keep one' },
+    { slug: 'vietnamese-salt-coffee', note: 'uses the same foam batch' },
   ] },
   { title: 'Round 3', sub: 'Filipino-favorite flavors', items: [
     { slug: 'banana-latte' }, { slug: 'ube-latte' }, { slug: 'langka-coconut-latte' },

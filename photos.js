@@ -10,22 +10,6 @@ window.PHOTOS = {
     "alt": "Tall glass of iced coffee with a thick white foam cap and caramel streaks on a dark wooden table",
     "match": "stand-in"
   },
-  "iced-spanish-latte": {
-    "src": "https://images.unsplash.com/photo-1671759545218-831c32bfe92d",
-    "page": "https://unsplash.com/photos/ZwnAW9dFAuI",
-    "author": "Caramel",
-    "license": "Unsplash",
-    "alt": "Layered iced latte in a tall glass, milk below and espresso on top, on a wooden table",
-    "match": "stand-in"
-  },
-  "brown-sugar-latte": {
-    "src": "https://images.unsplash.com/photo-1517701550927-30cf4ba1dba5",
-    "page": "https://unsplash.com/photos/vZOZJH_xkUk",
-    "author": "Nathan Dumlao",
-    "license": "Unsplash",
-    "alt": "Close-up of a glass-can iced latte, caramel-brown coffee swirling into milk over ice",
-    "match": "stand-in"
-  },
   "honey-hush-latte": {
     "src": "https://images.unsplash.com/photo-1764298490445-6add12301888",
     "page": "https://unsplash.com/photos/nIZl9PuwMXk",
@@ -448,6 +432,22 @@ window.PHOTOS = {
     "author": "Nick Fewings",
     "license": "Unsplash",
     "alt": "Cut-crystal martini glass of chilled shaken coffee with a thick pale foam top and coffee beans",
+    "match": "stand-in"
+  },
+  "latte": {
+    "src": "https://images.unsplash.com/photo-1517701550927-30cf4ba1dba5",
+    "page": "https://unsplash.com/photos/vZOZJH_xkUk",
+    "author": "Nathan Dumlao",
+    "license": "Unsplash",
+    "alt": "Close-up of a glass-can iced latte, caramel-brown coffee swirling into milk over ice",
+    "match": "stand-in"
+  },
+  "spanish-latte": {
+    "src": "https://images.unsplash.com/photo-1671759545218-831c32bfe92d",
+    "page": "https://unsplash.com/photos/ZwnAW9dFAuI",
+    "author": "Caramel",
+    "license": "Unsplash",
+    "alt": "Layered iced latte in a tall glass, milk below and espresso on top, on a wooden table",
     "match": "stand-in"
   }
 };

@@ -12,8 +12,20 @@
   const SYRUPS = window.SYRUPS || [];
   const SITE = window.SITE || { name: 'Kape' };
 
-  RECIPES.forEach((r, i) => { r.n = i + 1; });
+  // Old links and saved ticks from before the menu was renamed
+  const ALIASES = { 'iced-spanish-latte': 'spanish-latte', 'brown-sugar-latte': 'latte' };
+  const BUILD_ORDER = ['hot', 'iced'];
+  const BUILD_LABEL = { hot: 'Hot', iced: 'Iced' };
+
+  RECIPES.forEach((r, i) => {
+    r.n = i + 1;
+    // every recipe gets at least one build; menu drinks have hot + iced, each with its own cup
+    if (!r.builds) r.builds = { base: { parts: r.parts, steps: r.steps } };
+    r.buildKeys = Object.keys(r.builds).sort((a, b) => BUILD_ORDER.indexOf(a) - BUILD_ORDER.indexOf(b));
+    r.defaultBuild = r.defaultBuild || (r.builds.iced ? 'iced' : r.buildKeys[0]);
+  });
   const BY = Object.fromEntries(RECIPES.map(r => [r.slug, r]));
+  const peso = n => `₱${n}`;
 
   const $ = (s, el = document) => el.querySelector(s);
   const $$ = (s, el = document) => [...el.querySelectorAll(s)];
@@ -35,7 +47,7 @@
     get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; } },
     set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch { /* private mode etc. */ } },
   };
-  const tried = new Set(store.get('kape.tried', []));
+  const tried = new Set(store.get('kape.tried', []).map(k => ALIASES[k] || k));
 
   /* ---------------- toast ---------------- */
   const toastEl = $('[data-toast]');
@@ -160,7 +172,7 @@
   let current = RECIPES.slice();
 
   const haystack = r => [r.name, r.desc, r.style, COL_LABEL[r.col], ...r.serve,
-    ...r.parts.flatMap(p => p.items.map(i => i[1]))].join(' ').toLowerCase();
+    ...Object.values(r.builds).flatMap(b => b.parts.flatMap(p => p.items.map(i => i[1])))].join(' ').toLowerCase();
   RECIPES.forEach(r => { r._hay = haystack(r); });
 
   function matches(r, ignore) {
@@ -193,9 +205,10 @@
       ? `<span class="card__flag card__flag--try ${isTried ? 'card__flag--tried' : ''}">${isTried ? 'Tested' : 'Must try'}</span>`
       : `<span class="card__flag">${COL_LABEL[r.col]}</span>`;
     const serve = r.serve.map(s => s[0].toUpperCase() + s.slice(1)).join(' / ');
+    const right = r.price ? `${serve} · <b class="card__price">${peso(r.price)}</b>` : serve;
     return `<li class="card reveal" style="--d:${(i % 4) * 70}ms">
       <a class="card__link" href="#/${r.slug}" data-slug="${r.slug}">
-        <div class="card__top">${flag}<span>${serve}</span></div>
+        <div class="card__top">${flag}<span>${right}</span></div>
         <div class="card__media">${photoHTML(r.slug, 360)}</div>
         <div class="card__foot">
           <div><span class="card__num">(${pad(r.n)})</span><span class="card__name">${esc(r.name)}</span></div>
@@ -268,8 +281,13 @@
   let pushedFromPage = false;
   let returnFocus = null;
   let servings = 1;
+  let build = null; // 'hot' | 'iced' | 'base' for the open drink
   let openSlug = null;
   let closeT;
+
+  const curBuild = r => r.builds[build] || r.builds[r.defaultBuild];
+  const buildKey = r => (r.builds[build] ? build : r.defaultBuild);
+  const cap = s => s[0].toUpperCase() + s.slice(1);
 
   function listFor(slug) {
     return current.some(r => r.slug === slug) ? current : RECIPES;
@@ -285,7 +303,7 @@
   const canTry = r => r.col === 'try' || inRounds.has(r.slug);
 
   function partsHTML(r) {
-    return r.parts.map(p => {
+    return curBuild(r).parts.map(p => {
       const k = p.batch ? 1 : servings;
       const rows = p.items.map(([a, name, note]) => {
         const am = amount(a, k);
@@ -320,7 +338,16 @@
 
   function detailHTML(r) {
     const { prev, next } = neighbours(r.slug);
-    const serve = r.serve.length > 1 ? 'Hot or iced' : r.serve[0][0].toUpperCase() + r.serve[0].slice(1);
+    const b = curBuild(r);
+    const bk = buildKey(r);
+    const serve = r.serve.length > 1 ? 'Hot or iced' : cap(r.serve[0]);
+    // with a cup size, the fact names the cup for the build on screen
+    const serveFact = b.cup ? `${BUILD_LABEL[bk] || cap(r.serve[0])} · ${b.cup}` : serve;
+    const buildsHTML = r.buildKeys.length > 1 ? `
+          <section class="d-builds" role="group" aria-label="Hot or iced">
+            ${r.buildKeys.map(k => `<button type="button" data-build="${k}" aria-pressed="${k === bk}">
+              <b>${BUILD_LABEL[k] || cap(k)}</b><span>${esc(r.builds[k].cup || '')}</span></button>`).join('')}
+          </section>` : '';
     const shots = { 0: 'None', 1: '1 · single', 2: '2 · double', 4: '4 · quad' }[r.shots] ?? String(r.shots);
     const needs = r.needs.length ? r.needs.join(', ') : 'Nothing extra';
     const isTried = tried.has(r.slug);
@@ -329,8 +356,8 @@
       ? `<span>Photo: <a href="${esc(p.page || '#')}" target="_blank" rel="noopener">${esc(p.author)}</a>${p.license && p.license !== 'Unsplash' ? ` (${esc(p.license)})` : ' / Unsplash'}</span>`
       : '<span></span>';
     const standIn = p && p.match === 'stand-in' ? '<span>Similar drink shown</span>' : '';
-    const hasSugg = r.parts.some(pt => pt.items.some(i => String(i[0]).startsWith('~')));
-    const steps = r.steps.map((s, i) => {
+    const hasSugg = b.parts.some(pt => pt.items.some(i => String(i[0]).startsWith('~')));
+    const steps = b.steps.map((s, i) => {
       const [text, secs] = Array.isArray(s) ? s : [s, 0];
       const timer = secs ? `<button type="button" class="method__timer" data-secs="${secs}" aria-label="Start ${fmtTime(secs)} timer">${fmtTime(secs)}</button>` : '';
       return `<li data-step><span class="method__n">(${pad(i + 1)})</span><span class="method__t">${esc(text)}</span>${timer}</li>`;
@@ -338,6 +365,7 @@
     const tags = [
       `<span class="tag ${r.col === 'try' ? (isTried ? 'tag--tried' : 'tag--try') : ''}">${r.col === 'try' && isTried ? 'Tested' : COL_LABEL[r.col]}</span>`,
       `<span class="tag">${esc(r.style)}</span>`,
+      r.price ? `<span class="tag tag--price">${peso(r.price)}</span>` : '',
     ].join('');
 
     return `
@@ -361,11 +389,12 @@
             <p class="d-desc">${esc(r.desc)}</p>
           </section>
           <section class="d-facts" aria-label="At a glance">
-            <div class="d-fact"><span>Serve</span><b>${serve}</b></div>
+            <div class="d-fact"><span>Serve</span><b>${esc(serveFact)}</b></div>
             <div class="d-fact"><span>Espresso</span><b>${shots}</b></div>
             <div class="d-fact"><span>Time</span><b>~${r.time} min</b></div>
             <div class="d-fact"><span>Needs</span><b>${esc(needs)}</b></div>
           </section>
+          ${buildsHTML}
           <section aria-labelledby="ing-h">
             <div class="d-sec-head">
               <h3 id="ing-h">Ingredients</h3>
@@ -400,7 +429,7 @@
     if (!r) return;
     stopTimer();
     const swapping = detailOpen && openSlug !== slug;
-    if (openSlug !== slug) servings = 1;
+    if (openSlug !== slug) { servings = 1; build = r.defaultBuild; }
     openSlug = slug;
     document.title = `${r.name} — ${SITE.name}`;
 
@@ -454,7 +483,9 @@
 
   const slugFromHash = () => {
     const m = location.hash.match(/^#\/([\w-]+)$/);
-    return m && BY[m[1]] ? m[1] : null;
+    if (!m) return null;
+    const s = ALIASES[m[1]] || m[1];
+    return BY[s] ? s : null;
   };
 
   window.addEventListener('hashchange', e => {
@@ -473,6 +504,20 @@
 
     const goEl = t.closest('[data-go]');
     if (goEl) { e.preventDefault(); go(goEl.dataset.go); return; }
+
+    const bt = t.closest('[data-build]');
+    if (bt) {
+      if (bt.dataset.build === build) return;
+      stopTimer();
+      build = bt.dataset.build;
+      // swap only the recipe column so the photo doesn't reload
+      const tmp = document.createElement('div');
+      tmp.innerHTML = detailHTML(BY[openSlug]);
+      $('.d-main', sheetEl).replaceWith($('.d-main', tmp));
+      $$('.ing__amt', sheetEl).forEach(el => el.classList.add('is-bump'));
+      $(`[data-build="${build}"]`, sheetEl)?.focus({ preventScroll: true });
+      return;
+    }
 
     const serv = t.closest('[data-serv]');
     if (serv) {
@@ -634,14 +679,76 @@
   /* =====================================================================
      Basics: syrups + shot timer
      ===================================================================== */
-  function renderSyrups() {
-    $('[data-syrups]').innerHTML = SYRUPS.map(s => `
-      <li class="syrup">
+  const syrupsEl = $('[data-syrups]');
+  const batchN = {}; // chosen batch size per scalable syrup
+
+  const usedHTML = s => `<p class="syrup__used">Used in ${s.used.filter(u => BY[u]).map(u => `<a href="#/${u}">${esc(BY[u].name)}</a>`).join(', ')}</p>`;
+
+  function batchHTML(s) {
+    const n = batchN[s.id] ?? s.batch;
+    const total = s.perDrink.reduce((t, [q, unit]) => t + (unit === 'g' ? q * n : 0), 0);
+    const rows = s.perDrink.map(([q, unit, name]) =>
+      `<div class="ing"><span class="ing__amt">${fmtNum(q * n, unit)} ${unit}</span><span>${esc(name)}</span></div>`).join('');
+    return `
+      <div class="syrup__head"><span class="syrup__name">${esc(s.name)}</span><span class="syrup__yield">Makes about ${fmtNum(total, 'g')} g</span></div>
+      <div class="syrup__batch" role="group" aria-label="Batch size">
+        ${s.batches.map(b => `<button type="button" class="chip" data-batch="${esc(s.id)}" data-n="${b}" aria-pressed="${b === n}">${b} ${esc(s.unit)}</button>`).join('')}
+      </div>
+      <div class="syrup__cols">
+        <div class="syrup__ings">${rows}</div>
+        <div class="syrup__text">
+          <p class="syrup__method">${esc(s.method)}</p>
+          ${s.notes ? `<ul class="list-plain syrup__notes">${s.notes.map(t => `<li>${esc(t)}</li>`).join('')}</ul>` : ''}
+          ${usedHTML(s)}
+        </div>
+      </div>`;
+  }
+
+  function syrupBody(s) {
+    if (s.perDrink) return batchHTML(s);
+    return `
         <div class="syrup__head"><span class="syrup__name">${esc(s.name)}</span><span class="syrup__yield">${esc(s.yield)}</span></div>
         <p class="syrup__items">${s.items.map(esc).join(' · ')}</p>
         <p class="syrup__method">${esc(s.method)}</p>
-        <p class="syrup__used">Used in ${s.used.filter(u => BY[u]).map(u => `<a href="#/${u}">${esc(BY[u].name)}</a>`).join(', ')}</p>
+        ${usedHTML(s)}`;
+  }
+
+  function renderSyrups() {
+    syrupsEl.innerHTML = SYRUPS.map(s => `
+      <li class="syrup ${s.feature ? 'syrup--feature' : ''}" ${s.id ? `id="${esc(s.id)}"` : ''}>
+        ${s.feature ? '<p class="eyebrow syrup__eyebrow"><span class="dot" aria-hidden="true"></span> (Prep before opening)</p>' : ''}
+        ${syrupBody(s)}
       </li>`).join('');
+  }
+
+  syrupsEl.addEventListener('click', e => {
+    const b = e.target.closest('[data-batch]'); if (!b) return;
+    const s = SYRUPS.find(x => x.id === b.dataset.batch);
+    batchN[s.id] = Number(b.dataset.n);
+    const li = b.closest('.syrup');
+    li.innerHTML = (s.feature ? '<p class="eyebrow syrup__eyebrow"><span class="dot" aria-hidden="true"></span> (Prep before opening)</p>' : '') + syrupBody(s);
+    $$('.ing__amt', li).forEach(el => el.classList.add('is-bump'));
+    $(`[data-batch][data-n="${batchN[s.id]}"]`, li)?.focus({ preventScroll: true });
+  });
+
+  /* ---------------- menu board ---------------- */
+  function renderMenu() {
+    const el = $('[data-menu]');
+    if (!el) return;
+    const menu = RECIPES.filter(r => r.col === 'menu');
+    el.innerHTML = menu.map((r, i) => {
+      const ways = r.buildKeys.filter(k => BUILD_LABEL[k]).map(k => BUILD_LABEL[k]).join(' / ');
+      return `<li class="menu__row reveal" style="--d:${i * 50}ms">
+        <a href="#/${r.slug}" class="menu__link">
+          <span class="menu__num">(${pad(i + 1)})</span>
+          <span class="menu__thumb">${photoHTML(r.slug, 160)}</span>
+          <span class="menu__name">${esc(r.name)}</span>
+          <span class="menu__ways">${ways}</span>
+          <span class="menu__price">${peso(r.price)}</span>
+        </a>
+      </li>`;
+    }).join('');
+    $$('[data-menu-count]').forEach(c => { c.textContent = `(${pad(menu.length)})`; });
   }
 
   function setupShot() {
@@ -712,6 +819,7 @@
 
   /* ---------------- boot ---------------- */
   setupChrome();
+  renderMenu();
   update();
   renderRounds();
   renderSyrups();
@@ -721,4 +829,11 @@
 
   const initial = slugFromHash();
   if (initial) { pushedFromPage = false; showDetail(initial); }
+
+  // plain anchors (#menu, #batch-sea-salt-foam): land on them again once the wordmark has resized
+  const anchor = !initial && /^#[\w-]+$/.test(location.hash) && document.getElementById(location.hash.slice(1));
+  if (anchor) {
+    (document.fonts ? document.fonts.ready : Promise.resolve())
+      .then(() => setTimeout(() => anchor.scrollIntoView({ behavior: 'auto' }), 50));
+  }
 })();

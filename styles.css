@@ -149,6 +149,24 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 .section-head--sub { border-top: 1px solid var(--line); }
 .section-head--sub .cell { padding-top: calc(var(--pad) * 2); }
 
+/* ---------- menu board ---------- */
+.menu__aside { display: grid; gap: 14px; justify-items: start; }
+.menu__row { border-bottom: 1px solid var(--line); }
+.menu__link {
+  display: grid; align-items: center; column-gap: var(--pad);
+  grid-template-columns: 56px clamp(56px, 6vw, 84px) minmax(0, 1fr) auto minmax(90px, 9vw);
+  grid-template-areas: "num thumb name ways price";
+  padding: 12px var(--pad); transition: background-color .3s ease;
+}
+.menu__num { grid-area: num; font-size: var(--t-sm); color: var(--ink-3); font-feature-settings: "tnum"; }
+.menu__thumb { grid-area: thumb; }
+.menu__thumb .ph { width: 100%; }
+.menu__name { grid-area: name; font-size: clamp(26px, 3.6vw, 56px); line-height: 1; letter-spacing: -0.05em; }
+.menu__ways { grid-area: ways; font-size: var(--t-sm); color: var(--ink-2); }
+.menu__price { grid-area: price; justify-self: end; font-size: clamp(22px, 2.4vw, 38px); letter-spacing: -0.03em; font-feature-settings: "tnum"; transition: color .3s ease; }
+.menu__link:hover, .menu__link:focus-visible { background: var(--paper-hi); }
+.menu__link:hover .menu__price, .menu__link:focus-visible .menu__price { color: var(--coffee-dk); }
+
 /* ---------- filters ---------- */
 .filters { border-bottom: 1px solid var(--line); position: sticky; top: var(--nav-h); z-index: 15; background: var(--paper); }
 .filters__row { display: flex; }
@@ -218,8 +236,11 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 .ph img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .ph .ph__duo { filter: url(#duotone); transition: opacity .5s ease; }
 .ph .ph__color { opacity: 0; transform: scale(1.06); transition: transform .8s var(--ease-out), opacity .5s ease; }
-.card__link:hover .ph__duo, .card__link:focus-visible .ph__duo { opacity: 0; }
-.card__link:hover .ph__color, .card__link:focus-visible .ph__color { opacity: 1; transform: scale(1); }
+.card__link:hover .ph__duo, .card__link:focus-visible .ph__duo,
+.menu__link:hover .ph__duo, .menu__link:focus-visible .ph__duo { opacity: 0; }
+.card__link:hover .ph__color, .card__link:focus-visible .ph__color,
+.menu__link:hover .ph__color, .menu__link:focus-visible .ph__color { opacity: 1; transform: scale(1); }
+.card__price { font-weight: 500; color: var(--ink); }
 .ph--empty::after {
   content: ""; position: absolute; inset: 30%; border-radius: 50%; border: 1px solid var(--ink-3);
 }
@@ -318,7 +339,20 @@ input[type="range"]::-moz-range-thumb { width: 14px; height: 14px; border-radius
 
 .syrups { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--line); }
 .syrup { padding: var(--pad); border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); display: grid; gap: 10px; align-content: start; }
-.syrup:nth-child(3n) { border-right: 0; }
+/* the featured batch spans the row, so the rest start at child 2 */
+.syrup:nth-child(3n+1) { border-right: 0; }
+.syrup--feature { grid-column: 1 / -1; border-right: 0; background: var(--paper-hi); gap: 16px; padding-block: calc(var(--pad) * 1.5); }
+.syrup--feature .syrup__name { font-size: var(--t-xl); line-height: .95; letter-spacing: -0.05em; }
+.syrup__eyebrow { display: flex; align-items: center; gap: 8px; margin: 0; color: var(--ink); }
+.syrup__eyebrow .dot { background: var(--crema); box-shadow: 0 0 0 1px var(--ink); }
+.syrup__batch { display: flex; flex-wrap: wrap; gap: 6px; }
+.syrup__cols { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: calc(var(--pad) * 2); border-top: 1px solid var(--line); padding-top: var(--pad); }
+.syrup__ings .ing { font-size: var(--t-lg); letter-spacing: -0.02em; grid-template-columns: 96px 1fr; }
+.syrup__ings .ing__amt { font-weight: 500; }
+.syrup__text { display: grid; gap: 14px; align-content: start; }
+.syrup--feature .syrup__method { font-size: var(--t-md); color: var(--ink); }
+.syrup__notes { font-size: var(--t-sm); color: var(--ink-2); gap: 8px; }
+.syrup__notes li::before { width: 5px; height: 5px; background: var(--coffee); }
 .syrup__head { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
 .syrup__name { font-size: var(--t-lg); letter-spacing: -0.02em; }
 .syrup__yield { font-size: var(--t-sm); color: var(--ink-3); white-space: nowrap; }
@@ -393,6 +427,21 @@ input[type="range"]::-moz-range-thumb { width: 14px; height: 14px; border-radius
 .tag { font-size: var(--t-xs); border: 1px solid var(--line); border-radius: 999px; padding: 3px 10px 4px; display: inline-flex; align-items: center; gap: 6px; }
 .tag--try { background: var(--crema); border-color: var(--crema); }
 .tag--tried { background: var(--coffee); border-color: var(--coffee); color: var(--paper); }
+.tag--price { background: var(--ink); border-color: var(--ink); color: var(--paper); font-feature-settings: "tnum"; }
+
+/* hot / iced switch */
+.d-builds { display: grid; grid-template-columns: repeat(2, 1fr); }
+.d-builds button {
+  display: flex; justify-content: space-between; align-items: baseline; gap: 10px;
+  padding: 16px var(--pad); border: 0; background: none; cursor: pointer; text-align: left;
+  transition: background-color .25s ease, color .25s ease;
+}
+.d-builds button + button { border-left: 1px solid var(--line); }
+.d-builds b { font-weight: 500; font-size: var(--t-lg); letter-spacing: -0.02em; }
+.d-builds span { font-size: var(--t-sm); color: var(--ink-3); transition: color .25s ease; }
+.d-builds button:hover { background: var(--paper-hi); }
+.d-builds button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+.d-builds button[aria-pressed="true"] span { color: var(--crema); }
 .d-name { font-size: clamp(40px, 5.4vw, 92px); line-height: .92; letter-spacing: -0.055em; font-weight: 500; text-wrap: balance; }
 .d-name .paren { font-size: .3em; letter-spacing: -0.02em; vertical-align: top; color: var(--ink-3); margin-right: .3em; }
 .d-desc { font-size: var(--t-lg); line-height: 1.3; letter-spacing: -0.02em; max-width: 36ch; color: var(--ink); text-wrap: pretty; }
@@ -508,15 +557,16 @@ input[type="range"]::-moz-range-thumb { width: 14px; height: 14px; border-radius
   .hero__row { grid-template-columns: 1fr 1fr; }
   .hero__intro { grid-column: 1 / -1; min-height: 0; padding-bottom: calc(var(--pad) * 2); }
   .hero__row .cell:nth-child(2) { border-left: 0; border-top: 1px solid var(--line); }
-  .hero__row .cell:nth-child(3) { border-top: 1px solid var(--line); }
+  .hero__row .cell:nth-child(3), .hero__row .cell:nth-child(4) { border-top: 1px solid var(--line); }
   .spec--wide-hide { display: none !important; }
   .d-body { grid-template-columns: 1fr; }
   .d-media { border-right: 0; border-bottom: 1px solid var(--line); }
   .d-media__inner { position: static; }
   .d-media .ph { width: min(100%, 520px); margin-inline: auto; }
   .syrups { grid-template-columns: 1fr 1fr; }
-  .syrup:nth-child(3n) { border-right: 1px solid var(--line); }
-  .syrup:nth-child(2n) { border-right: 0; }
+  .syrup:nth-child(3n+1) { border-right: 1px solid var(--line); }
+  .syrup:nth-child(2n+1), .syrup--feature { border-right: 0; }
+  .syrup__cols { grid-template-columns: 1fr; gap: var(--pad); }
   .footer__row { grid-template-columns: 1fr 1fr; }
   .footer__end { grid-column: 1 / -1; border-left: 0 !important; border-top: 1px solid var(--line); justify-content: flex-start; }
   .must__intro { padding-right: var(--pad); }
@@ -559,6 +609,18 @@ input[type="range"]::-moz-range-thumb { width: 14px; height: 14px; border-radius
   .method li { grid-template-columns: 36px 1fr; }
   .method__timer { grid-column: 2; justify-self: start; }
   .ing { grid-template-columns: 74px 1fr; }
+  .menu__link {
+    grid-template-columns: 64px minmax(0, 1fr) auto;
+    grid-template-areas: "thumb name price" "thumb ways price";
+    row-gap: 4px;
+  }
+  .menu__num { display: none; }
+  .menu__name { align-self: end; }
+  .menu__ways { align-self: start; }
+  .menu__name { font-size: 26px; }
+  .menu__price { font-size: 22px; }
+  .d-builds b { font-size: var(--t-md); }
+  .d-builds button { flex-direction: column; gap: 2px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
