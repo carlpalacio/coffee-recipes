@@ -75,6 +75,7 @@ window.RECIPES = [
       hot: {
         cup: '300 ml cup',
         parts: [{ title: 'Cup', items: [['220 g', 'Hot water', 'about 90 °C'], ['2 shots', 'Espresso']] }],
+        single: { swap: { Espresso: '1 shot', 'Hot water': '240 g' } },
         steps: [
           'Pour the hot water into the 300 ml cup first.',
           [SHOT + ' on top of the water so the crema stays.', 28],
@@ -84,13 +85,17 @@ window.RECIPES = [
       iced: {
         cup: '380 ml cup',
         parts: [{ title: 'Cup', items: [['100 g', 'Ice'], ['200 g', 'Cold water'], ['2 shots', 'Espresso']] }],
+        single: { swap: { Espresso: '1 shot', 'Cold water': '220 g' } },
         steps: [
           'Fill the 380 ml cup with the ice and cold water.',
           [SHOT + ' and pour it over the top.', 28],
         ],
       },
     },
-    notes: ['Offer brown sugar syrup on request (15 g).'],
+    notes: [
+      'Offer brown sugar syrup on request (15 g).',
+      'A single fills the same cup, so it’s about half as strong. If it tastes watery, use 150 g water and leave room at the top.',
+    ],
     source: { by: 'classic' },
   },
   {
