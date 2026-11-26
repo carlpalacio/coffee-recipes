@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://images.unsplash.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=8">
+  <link rel="stylesheet" href="styles.css?v=9">
 </head>
 <body>
   <!-- Coffee duotone: every photo is mapped onto espresso → #987654 → cream so the set reads as one series -->
@@ -120,7 +120,7 @@
           <div class="calc">
             <label class="calc__field">
               <span>Dose in</span>
-              <input type="range" min="14" max="22" step="0.5" value="18" data-dose>
+              <input type="range" min="7" max="22" step="0.5" value="18" data-dose>
               <output data-dose-out>18 g</output>
             </label>
             <label class="calc__field">
@@ -157,6 +157,7 @@
             <li>Put the cup on a scale. Start the shot and the timer together.</li>
             <li>Stop at 36 g and check the time.</li>
             <li>Under 25 seconds and sour or thin: grind finer. Over 30 seconds and bitter or harsh: grind coarser.</li>
+            <li>For a single, use 9 g in the single basket and stop at 18 g, in the same 25–30 seconds. Keep the grinder on the double setting and fix a fast single by adding coffee, up to 10 g.</li>
             <li>Taste straight shots while dialing in, not lattes. Milk and sugar hide problems.</li>
             <li>Re-check every morning, and whenever you open a new bag of beans.</li>
           </ol>
@@ -185,7 +186,7 @@
 
       <div class="section-head section-head--sub" id="beans">
         <h3 class="cell">Beans on the bar</h3>
-        <p class="cell section-head__note">A starting shot for each bag. Load one into the shot timer, then adjust by taste.</p>
+        <p class="cell section-head__note">A starting double and single for each bag. Load either one into the shot timer, then adjust by taste.</p>
       </div>
       <ul class="beans" data-beans></ul>
 
@@ -224,8 +225,8 @@
 
   <div class="toast" role="status" aria-live="polite" data-toast></div>
 
-  <script src="photos.js?v=8"></script>
-  <script src="recipes.js?v=8"></script>
-  <script src="app.js?v=8"></script>
+  <script src="photos.js?v=9"></script>
+  <script src="recipes.js?v=9"></script>
+  <script src="app.js?v=9"></script>
 </body>
 </html>

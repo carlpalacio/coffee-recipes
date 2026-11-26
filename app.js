@@ -15,8 +15,10 @@
 
   // Old links and saved ticks from before the menu was renamed
   const ALIASES = { 'iced-spanish-latte': 'spanish-latte', 'brown-sugar-latte': 'latte' };
-  const BUILD_ORDER = ['hot', 'iced'];
-  const BUILD_LABEL = { hot: 'Hot', iced: 'Iced' };
+  // Espresso has Double / Single builds instead of Hot / Iced
+  const BUILD_ORDER = ['hot', 'iced', 'double', 'single'];
+  const BUILD_LABEL = { hot: 'Hot', iced: 'Iced', double: 'Double', single: 'Single' };
+  const TEMP_LABEL = { hot: 'Hot', iced: 'Iced' };
 
   RECIPES.forEach((r, i) => {
     r.n = i + 1;
@@ -280,7 +282,7 @@
   let pushedFromPage = false;
   let returnFocus = null;
   let servings = 1;
-  let build = null; // 'hot' | 'iced' | 'base' for the open drink
+  let build = null; // 'hot' | 'iced' | 'double' | 'single' | 'base' for the open drink
   let openSlug = null;
   let closeT;
 
@@ -341,13 +343,15 @@
     const bk = buildKey(r);
     const serve = r.serve.length > 1 ? 'Hot or iced' : cap(r.serve[0]);
     // with a cup size, the fact names the cup for the build on screen
-    const serveFact = b.cup ? `${BUILD_LABEL[bk] || cap(r.serve[0])} · ${b.cup}` : serve;
+    const serveFact = b.cup ? `${TEMP_LABEL[bk] || cap(r.serve[0])} · ${b.cup}` : serve;
+    const label = k => BUILD_LABEL[k] || cap(k);
     const buildsHTML = r.buildKeys.length > 1 ? `
-          <section class="d-builds" role="group" aria-label="Hot or iced">
+          <section class="d-builds" role="group" aria-label="${cap(r.buildKeys.join(' or '))}">
             ${r.buildKeys.map(k => `<button type="button" data-build="${k}" aria-pressed="${k === bk}">
-              <b>${BUILD_LABEL[k] || cap(k)}</b><span>${esc(r.builds[k].cup || '')}</span></button>`).join('')}
+              <b>${label(k)}</b><span>${esc(r.builds[k].sub || r.builds[k].cup || '')}</span></button>`).join('')}
           </section>` : '';
-    const shots = { 0: 'None', 1: '1 · single', 2: '2 · double', 4: '4 · quad' }[r.shots] ?? String(r.shots);
+    const nShots = b.shots ?? r.shots;
+    const shots = { 0: 'None', 1: '1 · single', 2: '2 · double', 4: '4 · quad' }[nShots] ?? String(nShots);
     const needs = r.needs.length ? r.needs.join(', ') : 'Nothing extra';
     const isTried = tried.has(r.slug);
     const p = PHOTOS[r.slug];
@@ -786,8 +790,8 @@
       return '<strong>Way too slow.</strong> Grind a lot coarser.';
     };
 
-    loadShot = bean => {
-      const s = bean.shot;
+    loadShot = (bean, size) => {
+      const s = bean.shots[size];
       dose.value = s.dose;
       ratio.value = (Math.round(((s.out[0] + s.out[1]) / 2 / s.dose) * 10) / 10).toFixed(1);
       calc();
@@ -796,7 +800,7 @@
       track.style.setProperty('--hi', hi / 40);
       tickLo.style.setProperty('--at', lo / 40); tickLo.textContent = lo;
       tickHi.style.setProperty('--at', hi / 40); tickHi.textContent = hi;
-      $('[data-shot-bean]').textContent = ` · ${bean.name}`;
+      $('[data-shot-bean]').textContent = ` · ${bean.name}, ${size}`;
       reset.click();
     };
 
@@ -822,6 +826,8 @@
   /* ---------------- beans on the bar ---------------- */
   const beanLinks = slugs => slugs.filter(s => BY[s]).map(s => `<a href="#/${s}">${esc(BY[s].name)}</a>`).join(', ');
   const span = ([a, b], unit) => (a === b ? `${a} ${unit}` : `${a}–${b} ${unit}`);
+  const SIZES = ['double', 'single'];
+  const loadText = (size, on) => (on ? `${BUILD_LABEL[size]} loaded` : `Load ${size} ↑`);
 
   function renderBeans() {
     const el = $('[data-beans]');
@@ -833,32 +839,36 @@
           <h4 class="bean__name">${esc(b.name)}</h4>
           <p class="bean__from">${esc(b.from)}</p>
         </div>
-        <dl class="bean__shot">
-          <div><dt>Dose</dt><dd>${b.shot.dose} g</dd></div>
-          <div><dt>Yield</dt><dd>${span(b.shot.out, 'g')}</dd></div>
-          <div><dt>Time</dt><dd>${span(b.shot.time, 's')}</dd></div>
-          <div><dt>Water</dt><dd>${esc(b.shot.water)}</dd></div>
-        </dl>
+        <table class="bean__shots">
+          <thead><tr><th scope="col"><span class="visually-hidden">Shot</span></th><th scope="col">Dose</th><th scope="col">Yield</th><th scope="col">Time</th></tr></thead>
+          <tbody>${SIZES.map(k => `
+            <tr><th scope="row">${BUILD_LABEL[k]}</th><td>${b.shots[k].dose} g</td><td>${span(b.shots[k].out, 'g')}</td><td>${span(b.shots[k].time, 's')}</td></tr>`).join('')}
+          </tbody>
+          <tfoot><tr><th scope="row">Water</th><td colspan="3">${esc(b.water)}</td></tr></tfoot>
+        </table>
         <p class="bean__taste">${esc(b.taste)}</p>
         <div class="bean__uses">
           <p><span>Use for</span>${beanLinks(b.use)}</p>
           ${b.skip ? `<p><span>Not for</span>${beanLinks(b.skip)}</p>` : ''}
         </div>
         <ul class="list-plain bean__notes">${b.notes.map(n => `<li>${esc(n)}</li>`).join('')}</ul>
-        <button type="button" class="btn-try bean__load" data-bean="${esc(b.id)}" aria-pressed="false">Load in shot timer ↑</button>
+        <div class="bean__loads">${SIZES.map(k => `
+          <button type="button" class="btn-try" data-bean="${esc(b.id)}" data-size="${k}" aria-pressed="false">${loadText(k, false)}</button>`).join('')}
+        </div>
       </li>`).join('');
 
     el.addEventListener('click', e => {
       const btn = e.target.closest('[data-bean]'); if (!btn) return;
       const b = BEANS.find(x => x.id === btn.dataset.bean);
-      loadShot(b);
+      const size = btn.dataset.size;
+      loadShot(b, size);
       $$('[data-bean]', el).forEach(x => {
         const on = x === btn;
         x.setAttribute('aria-pressed', on);
-        x.textContent = on ? 'Loaded in shot timer' : 'Load in shot timer ↑';
+        x.textContent = loadText(x.dataset.size, on);
       });
       $('#shot').scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' });
-      toast(`<b>●</b> Shot timer set for ${esc(b.name)}`);
+      toast(`<b>●</b> Shot timer set for ${esc(b.name)}, ${size}`);
     });
   }
 

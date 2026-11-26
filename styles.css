@@ -251,6 +251,7 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 .reveal.is-in { opacity: 1; transform: none; transition: opacity .7s ease, transform .9s var(--ease-out); transition-delay: var(--d, 0ms); }
 
 .empty { padding: 60px var(--pad); border-bottom: 1px solid var(--line); text-align: center; color: var(--ink-2); display: grid; gap: 10px; justify-items: center; }
+.empty[hidden] { display: none; }
 
 /* ---------- must try ---------- */
 .must { border-top: 0; }
@@ -369,11 +370,16 @@ input[type="range"]::-moz-range-thumb { width: 14px; height: 14px; border-radius
 .bean__role { color: var(--ink); white-space: nowrap; }
 .bean__name { font-size: clamp(26px, 2.6vw, 40px); line-height: 1; letter-spacing: -0.045em; font-weight: 500; }
 .bean__from { font-size: var(--t-sm); color: var(--ink-3); margin-top: 6px; }
-.bean__shot { display: grid; grid-template-columns: repeat(4, 1fr); margin: 0; border-block: 1px solid var(--line); }
-.bean__shot > div { padding: 10px 0; display: grid; gap: 4px; }
-.bean__shot > div + div { border-left: 1px solid color-mix(in srgb, var(--line) 25%, transparent); padding-left: 10px; }
-.bean__shot dt { font-size: var(--t-xs); color: var(--ink-3); }
-.bean__shot dd { margin: 0; font-size: var(--t-md); font-feature-settings: "tnum"; white-space: nowrap; }
+/* double and single shot, one row each */
+.bean__shots { width: 100%; border-collapse: collapse; border-block: 1px solid var(--line); font-feature-settings: "tnum"; }
+.bean__shots th, .bean__shots td { text-align: left; font-weight: 400; white-space: nowrap; padding: 9px 12px 9px 0; vertical-align: baseline; }
+.bean__shots th:last-child, .bean__shots td:last-child { padding-right: 0; }
+.bean__shots thead th { font-size: var(--t-xs); color: var(--ink-3); padding-block: 10px 4px; }
+.bean__shots tbody th { font-size: var(--t-sm); color: var(--ink-3); width: 1%; }
+.bean__shots tbody td { font-size: var(--t-md); }
+.bean__shots tbody tr + tr > * { border-top: 1px solid color-mix(in srgb, var(--line) 25%, transparent); }
+.bean__shots tfoot > tr > * { border-top: 1px solid color-mix(in srgb, var(--line) 25%, transparent); font-size: var(--t-sm); }
+.bean__shots tfoot th { color: var(--ink-3); }
 .bean__taste { font-size: var(--t-md); line-height: 1.35; }
 .bean__uses { display: grid; gap: 6px; font-size: var(--t-sm); }
 .bean__uses span { color: var(--ink-3); margin-right: 8px; }
@@ -381,7 +387,7 @@ input[type="range"]::-moz-range-thumb { width: 14px; height: 14px; border-radius
 .bean__uses a:hover { text-decoration-color: var(--ink); }
 .bean__notes { font-size: var(--t-sm); color: var(--ink-2); gap: 8px; }
 .bean__notes li::before { width: 5px; height: 5px; background: var(--coffee); }
-.bean__load { justify-self: start; }
+.bean__loads { display: flex; flex-wrap: wrap; gap: 8px; }
 .menu__links { display: flex; flex-wrap: wrap; gap: 6px 20px; }
 
 /* ---------- footer ---------- */
@@ -552,9 +558,6 @@ input[type="range"]::-moz-range-thumb { width: 14px; height: 14px; border-radius
    Responsive
    ===================================================================== */
 @media (max-width: 1180px) {
-  .bean__shot { grid-template-columns: repeat(2, 1fr); }
-  .bean__shot > div:nth-child(3) { border-left: 0; padding-left: 0; }
-  .bean__shot > div:nth-child(n+3) { border-top: 1px solid color-mix(in srgb, var(--line) 25%, transparent); }
   .grid { grid-template-columns: repeat(3, 1fr); }
   .grid > .card:nth-child(4n) { border-right: 1px solid var(--line); }
   .grid > .card:nth-child(3n) { border-right: 0; }

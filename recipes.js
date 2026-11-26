@@ -33,11 +33,12 @@ window.RECIPES = [
   {
     slug: 'espresso', name: 'Espresso', col: 'menu', serve: ['hot'], style: 'Black',
     shots: 2, time: 2, needs: ['Scale'],
-    desc: 'A straight double shot: 18 g of coffee in, 36 g out, in 25 to 30 seconds. Every other drink on the menu starts from this shot, so dial it in before you open.',
+    desc: 'A straight double shot, 18 g of coffee in and 36 g out in 25 to 30 seconds, or a single from 9 g in the single basket. Every other drink on the menu starts from the double, so dial it in before you open.',
+    // Double / Single instead of Hot / Iced; both are served hot
     builds: {
-      hot: {
-        cup: 'Espresso cup',
-        parts: [{ title: 'Shot', items: [['18 g', 'Fine-ground coffee'], ['36 g', 'Espresso out', '1 : 2 ratio']] }],
+      double: {
+        cup: 'Espresso cup', sub: '18 g → 36 g', shots: 2,
+        parts: [{ title: 'Shot', items: [['18 g', 'Fine-ground coffee', 'double basket'], ['36 g', 'Espresso out', '1 : 2 ratio']] }],
         steps: [
           'Weigh the coffee into the basket, level it and tamp evenly.',
           ['Put the cup on a scale. Start the shot and the timer together.', 28],
@@ -45,8 +46,22 @@ window.RECIPES = [
           'Under 25 seconds and sour: grind finer. Over 30 seconds and bitter: grind coarser.',
         ],
       },
+      single: {
+        cup: 'Espresso cup', sub: '9 g → 18 g', shots: 1,
+        parts: [{ title: 'Shot', items: [['9 g', 'Fine-ground coffee', 'single basket'], ['18 g', 'Espresso out', '1 : 2 ratio']] }],
+        steps: [
+          'Swap in the single basket. Weigh in the coffee, level it and tamp evenly.',
+          ['Put the cup on a scale. Start the shot and the timer together.', 28],
+          'Stop at 18 g and check the time. Aim for the same 25–30 seconds as the double.',
+          'Leave the grinder on the double setting. If the single runs fast, add 0.5 g of coffee at a time, up to 10 g. If it runs slow, take a little out.',
+        ],
+      },
     },
-    notes: ['A double shot is only about 40 ml, so serve it in a small espresso cup rather than the 300 ml cup.', 'Water at 93–96 °C. Taste straight shots while dialing in, not lattes.'],
+    notes: [
+      'A double is only about 40 ml and a single about half that, so serve both in a small espresso cup rather than the 300 ml cup.',
+      'No single basket? Pull a double under the split spout into two cups. Each cup gets a single, and the grind stays the same.',
+      'Water at 93–96 °C. Taste straight shots while dialing in, not lattes.',
+    ],
     source: { by: 'classic', note: 'Targets from La Marzocco, Clive Coffee and Origin Coffee.' },
   },
   {
@@ -1097,11 +1112,15 @@ window.BEANS = [
     id: 'blend-70-30', name: 'Arabica Blend 70/30', role: 'House espresso',
     from: 'Brewing Club Co. · 70% Mt. Apo Arabica, 30% Sultan Kudarat Robusta',
     roast: 'Golden roast', bags: '1 kg + 500 g',
-    shot: { dose: 18, out: [36, 38], time: [25, 30], water: '93–96 °C' },
+    water: '93–96 °C',
+    shots: {
+      double: { dose: 18, out: [36, 38], time: [25, 30] },
+      single: { dose: 9, out: [18, 19], time: [25, 30] },
+    },
     taste: 'The Robusta brings chocolate, roasted nuts and a thick crema; the Mt. Apo adds honey sweetness.',
     use: ['espresso', 'americano', 'cappuccino', 'mocha', 'latte', 'spanish-latte', 'sea-salt-latte'],
     notes: [
-      '“Golden” isn’t on the roaster’s list of roasts. If the beans are light brown like cinnamon, it’s a light roast: pull 18 g → 40 g in 28–32 s, with the water 1–2 °C hotter.',
+      '“Golden” isn’t on the roaster’s list of roasts. If the beans are light brown like cinnamon, it’s a light roast: pull 18 g → 40 g in 28–32 s (a single: 9 g → 20 g), with the water 1–2 °C hotter.',
       'Open the 500 g bag first and keep the 1 kg sealed until you need it.',
       'About 75 double shots in all, after dialing in.',
     ],
@@ -1110,7 +1129,11 @@ window.BEANS = [
     id: 'mt-apo', name: 'Mt. Apo Arabica', role: 'Black & fruity drinks',
     from: 'Brewing Club Co. · single origin, 100% Arabica',
     roast: 'Medium roast', bags: '500 g',
-    shot: { dose: 18, out: [40, 40], time: [28, 32], water: '94–96 °C' },
+    water: '94–96 °C',
+    shots: {
+      double: { dose: 18, out: [40, 40], time: [28, 32] },
+      single: { dose: 9, out: [20, 20], time: [28, 32] },
+    },
     taste: 'Floral, citrus and honey, with a lighter body than the blend. Lovely black; gets lost under chocolate and condensed milk.',
     use: ['espresso', 'americano', 'honey-lemon-tonic', 'pineapple-tonic', 'honey-hush-latte'],
     skip: ['mocha', 'spanish-latte', 'sea-salt-latte'],
@@ -1124,7 +1147,11 @@ window.BEANS = [
     id: 'likha', name: 'Likha', role: 'Use up first',
     from: 'Brewing Club Co. · Arabica–Robusta blend, natural process · roasted 20 Nov 2026',
     roast: 'Medium roast', bags: '500 g',
-    shot: { dose: 18, out: [40, 42], time: [28, 30], water: '95–96 °C' },
+    water: '95–96 °C',
+    shots: {
+      double: { dose: 18, out: [40, 42], time: [28, 30] },
+      single: { dose: 9, out: [20, 21], time: [28, 30] },
+    },
     taste: 'Fruity: berries and raisin from the Bukidnon Arabica, with cocoa underneath. A longer, hotter shot softens the fruit.',
     use: ['latte', 'spanish-latte', 'sea-salt-latte'],
     notes: [
