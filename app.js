@@ -10,6 +10,7 @@
   const STYLES = window.STYLES || [];
   const ROUNDS = window.ROUNDS || [];
   const SYRUPS = window.SYRUPS || [];
+  const BEANS = window.BEANS || [];
   const SITE = window.SITE || { name: 'Kape' };
 
   // Old links and saved ticks from before the menu was renamed
@@ -748,6 +749,7 @@
     $$('[data-menu-count]').forEach(c => { c.textContent = `(${pad(menu.length)})`; });
   }
 
+  let loadShot = () => {}; // set by setupShot; bean cards call it
   function setupShot() {
     const dose = $('[data-dose]'), ratio = $('[data-ratio]');
     const doseOut = $('[data-dose-out]'), ratioOut = $('[data-ratio-out]');
@@ -772,12 +774,30 @@
       fill.style.width = `${Math.min(t / 40, 1) * 100}%`;
     };
     const loop = () => { elapsed = (performance.now() - t0) / 1000; paint(elapsed); raf = requestAnimationFrame(loop); };
+    // target window in seconds; a bean card can change it
+    let lo = 25, hi = 30;
+    const track = $('.timer__track');
+    const tickLo = $('[data-tick-lo]'), tickHi = $('[data-tick-hi]');
     const judge = t => {
-      if (t < 20) return '<strong>Way too fast.</strong> Grind a lot finer.';
-      if (t < 25) return '<strong>A little fast.</strong> If it tastes sour or thin, grind finer.';
-      if (t <= 30) return '<strong>In range.</strong> Now taste it.';
-      if (t <= 35) return '<strong>A little slow.</strong> If it tastes bitter or harsh, grind coarser.';
+      if (t < lo - 5) return '<strong>Way too fast.</strong> Grind a lot finer.';
+      if (t < lo) return '<strong>A little fast.</strong> If it tastes sour or thin, grind finer.';
+      if (t <= hi) return '<strong>In range.</strong> Now taste it.';
+      if (t <= hi + 5) return '<strong>A little slow.</strong> If it tastes bitter or harsh, grind coarser.';
       return '<strong>Way too slow.</strong> Grind a lot coarser.';
+    };
+
+    loadShot = bean => {
+      const s = bean.shot;
+      dose.value = s.dose;
+      ratio.value = (Math.round(((s.out[0] + s.out[1]) / 2 / s.dose) * 10) / 10).toFixed(1);
+      calc();
+      lo = s.time[0]; hi = s.time[1];
+      track.style.setProperty('--lo', lo / 40);
+      track.style.setProperty('--hi', hi / 40);
+      tickLo.style.setProperty('--at', lo / 40); tickLo.textContent = lo;
+      tickHi.style.setProperty('--at', hi / 40); tickHi.textContent = hi;
+      $('[data-shot-bean]').textContent = ` · ${bean.name}`;
+      reset.click();
     };
 
     toggle.addEventListener('click', () => {
@@ -794,8 +814,51 @@
     reset.addEventListener('click', () => {
       running = false; cancelAnimationFrame(raf); elapsed = 0; paint(0);
       toggle.textContent = 'Start';
-      verdict.innerHTML = `Start the timer when you start the shot. Stop it when the scale reads <span data-yield-inline>${yieldEls[0].textContent}</span>.`;
+      verdict.innerHTML = `Start the timer when you start the shot. Stop it when the scale reads <span data-yield-inline>${yieldEls[0].textContent}</span>. Aim for ${lo}–${hi} s.`;
       yieldEls[1] = $('[data-yield-inline]');
+    });
+  }
+
+  /* ---------------- beans on the bar ---------------- */
+  const beanLinks = slugs => slugs.filter(s => BY[s]).map(s => `<a href="#/${s}">${esc(BY[s].name)}</a>`).join(', ');
+  const span = ([a, b], unit) => (a === b ? `${a} ${unit}` : `${a}–${b} ${unit}`);
+
+  function renderBeans() {
+    const el = $('[data-beans]');
+    if (!el || !BEANS.length) return;
+    el.innerHTML = BEANS.map((b, i) => `
+      <li class="bean" id="bean-${esc(b.id)}">
+        <div class="bean__top"><span class="bean__role">(${pad(i + 1)}) ${esc(b.role)}</span><span>${esc(b.roast)} · ${esc(b.bags)}</span></div>
+        <div>
+          <h4 class="bean__name">${esc(b.name)}</h4>
+          <p class="bean__from">${esc(b.from)}</p>
+        </div>
+        <dl class="bean__shot">
+          <div><dt>Dose</dt><dd>${b.shot.dose} g</dd></div>
+          <div><dt>Yield</dt><dd>${span(b.shot.out, 'g')}</dd></div>
+          <div><dt>Time</dt><dd>${span(b.shot.time, 's')}</dd></div>
+          <div><dt>Water</dt><dd>${esc(b.shot.water)}</dd></div>
+        </dl>
+        <p class="bean__taste">${esc(b.taste)}</p>
+        <div class="bean__uses">
+          <p><span>Use for</span>${beanLinks(b.use)}</p>
+          ${b.skip ? `<p><span>Not for</span>${beanLinks(b.skip)}</p>` : ''}
+        </div>
+        <ul class="list-plain bean__notes">${b.notes.map(n => `<li>${esc(n)}</li>`).join('')}</ul>
+        <button type="button" class="btn-try bean__load" data-bean="${esc(b.id)}" aria-pressed="false">Load in shot timer ↑</button>
+      </li>`).join('');
+
+    el.addEventListener('click', e => {
+      const btn = e.target.closest('[data-bean]'); if (!btn) return;
+      const b = BEANS.find(x => x.id === btn.dataset.bean);
+      loadShot(b);
+      $$('[data-bean]', el).forEach(x => {
+        const on = x === btn;
+        x.setAttribute('aria-pressed', on);
+        x.textContent = on ? 'Loaded in shot timer' : 'Load in shot timer ↑';
+      });
+      $('#shot').scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' });
+      toast(`<b>●</b> Shot timer set for ${esc(b.name)}`);
     });
   }
 
@@ -821,6 +884,7 @@
   renderRounds();
   renderSyrups();
   setupShot();
+  renderBeans();
   renderCredits();
   observeReveal(document);
 

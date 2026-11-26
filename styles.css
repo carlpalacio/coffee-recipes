@@ -319,7 +319,7 @@ input[type="range"]::-moz-range-thumb { width: 14px; height: 14px; border-radius
 .timer__read { font-size: clamp(64px, 7vw, 104px); line-height: .9; letter-spacing: -0.05em; font-feature-settings: "tnum"; }
 .timer__read small { font-size: .3em; letter-spacing: 0; margin-left: 6px; color: #a49d92; }
 .timer__track { position: relative; height: 34px; border-top: 1px solid #6b645b; }
-.timer__zone { position: absolute; top: 0; left: 62.5%; width: 12.5%; height: 10px; background: color-mix(in srgb, var(--crema) 35%, transparent); }
+.timer__zone { position: absolute; top: 0; left: calc(var(--lo, .625) * 100%); width: calc((var(--hi, .75) - var(--lo, .625)) * 100%); height: 10px; transition: left .4s var(--ease), width .4s var(--ease); background: color-mix(in srgb, var(--crema) 35%, transparent); }
 .timer__fill { position: absolute; top: -1px; left: 0; height: 3px; width: 0; background: var(--crema); }
 .timer__tick { position: absolute; top: 14px; left: calc(var(--at) * 100%); transform: translateX(-50%); font-size: var(--t-xs); color: #a49d92; font-feature-settings: "tnum"; }
 .timer__tick:first-of-type { transform: none; }
@@ -360,6 +360,29 @@ input[type="range"]::-moz-range-thumb { width: 14px; height: 14px; border-radius
 .syrup__used { font-size: var(--t-sm); color: var(--ink-3); }
 .syrup__used a { color: var(--ink); }
 .syrup__used a:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+/* ---------- beans on the bar ---------- */
+.beans { display: grid; grid-template-columns: repeat(3, 1fr); }
+.bean { padding: var(--pad); border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); display: grid; gap: 16px; align-content: start; }
+.bean:nth-child(3n) { border-right: 0; }
+.bean__top { display: flex; justify-content: space-between; gap: 12px; font-size: var(--t-xs); color: var(--ink-3); }
+.bean__role { color: var(--ink); white-space: nowrap; }
+.bean__name { font-size: clamp(26px, 2.6vw, 40px); line-height: 1; letter-spacing: -0.045em; font-weight: 500; }
+.bean__from { font-size: var(--t-sm); color: var(--ink-3); margin-top: 6px; }
+.bean__shot { display: grid; grid-template-columns: repeat(4, 1fr); margin: 0; border-block: 1px solid var(--line); }
+.bean__shot > div { padding: 10px 0; display: grid; gap: 4px; }
+.bean__shot > div + div { border-left: 1px solid color-mix(in srgb, var(--line) 25%, transparent); padding-left: 10px; }
+.bean__shot dt { font-size: var(--t-xs); color: var(--ink-3); }
+.bean__shot dd { margin: 0; font-size: var(--t-md); font-feature-settings: "tnum"; white-space: nowrap; }
+.bean__taste { font-size: var(--t-md); line-height: 1.35; }
+.bean__uses { display: grid; gap: 6px; font-size: var(--t-sm); }
+.bean__uses span { color: var(--ink-3); margin-right: 8px; }
+.bean__uses a { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; text-decoration-color: color-mix(in srgb, var(--ink) 35%, transparent); }
+.bean__uses a:hover { text-decoration-color: var(--ink); }
+.bean__notes { font-size: var(--t-sm); color: var(--ink-2); gap: 8px; }
+.bean__notes li::before { width: 5px; height: 5px; background: var(--coffee); }
+.bean__load { justify-self: start; }
+.menu__links { display: flex; flex-wrap: wrap; gap: 6px 20px; }
 
 /* ---------- footer ---------- */
 .footer { border-top: 1px solid var(--line); }
@@ -529,6 +552,9 @@ input[type="range"]::-moz-range-thumb { width: 14px; height: 14px; border-radius
    Responsive
    ===================================================================== */
 @media (max-width: 1180px) {
+  .bean__shot { grid-template-columns: repeat(2, 1fr); }
+  .bean__shot > div:nth-child(3) { border-left: 0; padding-left: 0; }
+  .bean__shot > div:nth-child(n+3) { border-top: 1px solid color-mix(in srgb, var(--line) 25%, transparent); }
   .grid { grid-template-columns: repeat(3, 1fr); }
   .grid > .card:nth-child(4n) { border-right: 1px solid var(--line); }
   .grid > .card:nth-child(3n) { border-right: 0; }
@@ -565,6 +591,8 @@ input[type="range"]::-moz-range-thumb { width: 14px; height: 14px; border-radius
   .syrup:nth-child(3n+1) { border-right: 1px solid var(--line); }
   .syrup:nth-child(2n+1), .syrup--feature { border-right: 0; }
   .syrup__cols { grid-template-columns: 1fr; gap: var(--pad); }
+  .beans { grid-template-columns: 1fr; }
+  .bean { border-right: 0; }
   .footer__row { grid-template-columns: 1fr 1fr; }
   .footer__end { grid-column: 1 / -1; border-left: 0 !important; border-top: 1px solid var(--line); justify-content: flex-start; }
   .must__intro { padding-right: var(--pad); }

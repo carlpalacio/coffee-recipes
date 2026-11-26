@@ -1088,6 +1088,52 @@ window.SYRUPS = [
   { name: 'Cereal milk', yield: 'per drink', items: ['Handful of cornflakes', '150 g milk'], method: 'Air-fry the cornflakes 3–5 min, steep in the milk in the fridge 30 min, then strain.', used: ['breakfast-latte'] },
 ];
 
+/* ---------------- Beans on the bar ----------------
+   One card per bag, with a starting shot. `shot.out` and `shot.time` are
+   ranges; "Load in shot timer" sets the timer to the middle of the yield
+   and judges the time against this bean's window. Adjust by taste. */
+window.BEANS = [
+  {
+    id: 'blend-70-30', name: 'Arabica Blend 70/30', role: 'House espresso',
+    from: 'Brewing Club Co. · 70% Mt. Apo Arabica, 30% Sultan Kudarat Robusta',
+    roast: 'Golden roast', bags: '1 kg + 500 g',
+    shot: { dose: 18, out: [36, 38], time: [25, 30], water: '93–96 °C' },
+    taste: 'The Robusta brings chocolate, roasted nuts and a thick crema; the Mt. Apo adds honey sweetness.',
+    use: ['espresso', 'americano', 'cappuccino', 'mocha', 'latte', 'spanish-latte', 'sea-salt-latte'],
+    notes: [
+      '“Golden” isn’t on the roaster’s list of roasts. If the beans are light brown like cinnamon, it’s a light roast: pull 18 g → 40 g in 28–32 s, with the water 1–2 °C hotter.',
+      'Open the 500 g bag first and keep the 1 kg sealed until you need it.',
+      'About 75 double shots in all, after dialing in.',
+    ],
+  },
+  {
+    id: 'mt-apo', name: 'Mt. Apo Arabica', role: 'Black & fruity drinks',
+    from: 'Brewing Club Co. · single origin, 100% Arabica',
+    roast: 'Medium roast', bags: '500 g',
+    shot: { dose: 18, out: [40, 40], time: [28, 32], water: '94–96 °C' },
+    taste: 'Floral, citrus and honey, with a lighter body than the blend. Lovely black; gets lost under chocolate and condensed milk.',
+    use: ['espresso', 'americano', 'honey-lemon-tonic', 'pineapple-tonic', 'honey-hush-latte'],
+    skip: ['mocha', 'spanish-latte', 'sea-salt-latte'],
+    notes: [
+      'No Robusta, so it will probably need a finer grind than the blend.',
+      'One grinder? Keep it on the blend during service and use this bag for tastings before or after hours.',
+      'About 25 double shots.',
+    ],
+  },
+  {
+    id: 'likha', name: 'Likha', role: 'Use up first',
+    from: 'Brewing Club Co. · Arabica–Robusta blend, natural process · roasted 20 Nov 2026',
+    roast: 'Medium roast', bags: '500 g',
+    shot: { dose: 18, out: [40, 42], time: [28, 30], water: '95–96 °C' },
+    taste: 'Fruity: berries and raisin from the Bukidnon Arabica, with cocoa underneath. A longer, hotter shot softens the fruit.',
+    use: ['latte', 'spanish-latte', 'sea-salt-latte'],
+    notes: [
+      'Use it for practice shots and iced milk drinks while you dial in.',
+      'Rounder and more chocolatey from about 30 Nov, 10 days after roasting.',
+    ],
+  },
+];
+
 /* ---------------- Testing plan (Must try section) ---------------- */
 window.ROUNDS = [
   { title: 'Round 1', sub: 'Opening menu', items: [

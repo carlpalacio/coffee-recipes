@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://images.unsplash.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=7">
+  <link rel="stylesheet" href="styles.css?v=8">
 </head>
 <body>
   <!-- Coffee duotone: every photo is mapped onto espresso → #987654 → cream so the set reads as one series -->
@@ -59,7 +59,7 @@
         <h2 id="menu-title" class="cell">Menu <span class="paren" data-menu-count>(07)</span></h2>
         <div class="cell menu__aside">
           <p class="section-head__note">Hot drinks go in the 300 ml cup, iced in the 380 ml cup. Tap a drink for its hot and iced recipes.</p>
-          <a class="link-btn" href="#batch-sea-salt-foam">Sea salt foam batch ↓</a>
+          <p class="menu__links"><a class="link-btn" href="#beans">Beans &amp; shot recipes ↓</a> <a class="link-btn" href="#batch-sea-salt-foam">Sea salt foam batch ↓</a></p>
         </div>
       </div>
       <ol class="menu__list" data-menu></ol>
@@ -115,7 +115,7 @@
       <div class="basics__grid">
         <!-- Shot timer -->
         <div class="cell tool" id="shot">
-          <p class="eyebrow">(Shot timer)</p>
+          <p class="eyebrow">(Shot timer)<span data-shot-bean></span></p>
           <h3 class="tool__title">Dial in the shot</h3>
           <div class="calc">
             <label class="calc__field">
@@ -137,8 +137,8 @@
               <span class="timer__zone"></span>
               <span class="timer__fill" data-timer-fill></span>
               <span class="timer__tick" style="--at:0">0</span>
-              <span class="timer__tick" style="--at:.625">25</span>
-              <span class="timer__tick" style="--at:.75">30</span>
+              <span class="timer__tick" style="--at:.625" data-tick-lo>25</span>
+              <span class="timer__tick" style="--at:.75" data-tick-hi>30</span>
               <span class="timer__tick" style="--at:1">40</span>
             </div>
             <div class="timer__btns">
@@ -183,6 +183,12 @@
         </div>
       </div>
 
+      <div class="section-head section-head--sub" id="beans">
+        <h3 class="cell">Beans on the bar</h3>
+        <p class="cell section-head__note">A starting shot for each bag. Load one into the shot timer, then adjust by taste.</p>
+      </div>
+      <ul class="beans" data-beans></ul>
+
       <div class="section-head section-head--sub">
         <h3 class="cell">Batch syrups &amp; sauces</h3>
         <p class="cell section-head__note">Make these ahead. Keep them in the fridge in a squeeze bottle.</p>
@@ -218,8 +224,8 @@
 
   <div class="toast" role="status" aria-live="polite" data-toast></div>
 
-  <script src="photos.js?v=7"></script>
-  <script src="recipes.js?v=7"></script>
-  <script src="app.js?v=7"></script>
+  <script src="photos.js?v=8"></script>
+  <script src="recipes.js?v=8"></script>
+  <script src="app.js?v=8"></script>
 </body>
 </html>
