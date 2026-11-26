@@ -15,10 +15,10 @@
 
   // Old links and saved ticks from before the menu was renamed
   const ALIASES = { 'iced-spanish-latte': 'spanish-latte', 'brown-sugar-latte': 'latte' };
-  // Espresso has Double / Single builds instead of Hot / Iced
-  const BUILD_ORDER = ['hot', 'iced', 'double', 'single'];
-  const BUILD_LABEL = { hot: 'Hot', iced: 'Iced', double: 'Double', single: 'Single' };
-  const TEMP_LABEL = { hot: 'Hot', iced: 'Iced' };
+  const BUILD_ORDER = ['hot', 'iced'];
+  const BUILD_LABEL = { hot: 'Hot', iced: 'Iced' };
+  const SHOT_LABEL = { double: 'Double', single: 'Single' };
+  const SHOT_SUB = { double: '18 g → 36 g', single: '9 g → 18 g' };
 
   RECIPES.forEach((r, i) => {
     r.n = i + 1;
@@ -282,12 +282,18 @@
   let pushedFromPage = false;
   let returnFocus = null;
   let servings = 1;
-  let build = null; // 'hot' | 'iced' | 'double' | 'single' | 'base' for the open drink
+  let build = null; // 'hot' | 'iced' | 'base' for the open drink
+  let shot = 'double'; // 'double' | 'single', for builds that have a single version
   let openSlug = null;
   let closeT;
 
   const curBuild = r => r.builds[build] || r.builds[r.defaultBuild];
   const buildKey = r => (r.builds[build] ? build : r.defaultBuild);
+  // the build on screen, with its single version swapped in when picked
+  const view = r => {
+    const b = curBuild(r);
+    return shot === 'single' && b.single ? { ...b, parts: b.single.parts, steps: b.single.steps, shots: 1 } : b;
+  };
   const cap = s => s[0].toUpperCase() + s.slice(1);
 
   function listFor(slug) {
@@ -304,7 +310,7 @@
   const canTry = r => r.col === 'try' || inRounds.has(r.slug);
 
   function partsHTML(r) {
-    return curBuild(r).parts.map(p => {
+    return view(r).parts.map(p => {
       const k = p.batch ? 1 : servings;
       const rows = p.items.map(([a, name, note]) => {
         const am = amount(a, k);
@@ -339,16 +345,27 @@
 
   function detailHTML(r) {
     const { prev, next } = neighbours(r.slug);
-    const b = curBuild(r);
+    const b = view(r);
     const bk = buildKey(r);
     const serve = r.serve.length > 1 ? 'Hot or iced' : cap(r.serve[0]);
     // with a cup size, the fact names the cup for the build on screen
-    const serveFact = b.cup ? `${TEMP_LABEL[bk] || cap(r.serve[0])} · ${b.cup}` : serve;
-    const label = k => BUILD_LABEL[k] || cap(k);
+    const serveFact = b.cup ? `${BUILD_LABEL[bk] || cap(r.serve[0])} · ${b.cup}` : serve;
     const buildsHTML = r.buildKeys.length > 1 ? `
-          <section class="d-builds" role="group" aria-label="${cap(r.buildKeys.join(' or '))}">
+          <section class="d-builds" role="group" aria-label="Hot or iced">
             ${r.buildKeys.map(k => `<button type="button" data-build="${k}" aria-pressed="${k === bk}">
-              <b>${label(k)}</b><span>${esc(r.builds[k].sub || r.builds[k].cup || '')}</span></button>`).join('')}
+              <b>${BUILD_LABEL[k] || cap(k)}</b><span>${esc(r.builds[k].cup || '')}</span></button>`).join('')}
+          </section>` : '';
+    // a single lists what changes from the double, per drink
+    const swap = curBuild(r).single?.swap;
+    const swapNote = shot === 'single' && swap
+      ? `<p class="d-shot-note">For a single: ${curBuild(r).parts.flatMap(p => p.items)
+        .filter(i => swap[i[1]]).map(i => `${esc(swap[i[1]])} ${esc(i[1].toLowerCase())} instead of ${esc(i[0])}`).join(', ')}. Everything else stays the same.</p>`
+      : '';
+    const shotsHTML = curBuild(r).single ? `
+          <section class="d-builds" role="group" aria-label="Double or single">
+            ${Object.keys(SHOT_LABEL).map(k => `<button type="button" data-shot="${k}" aria-pressed="${k === shot}">
+              <b>${SHOT_LABEL[k]}</b><span>${SHOT_SUB[k]}</span></button>`).join('')}
+            ${swapNote}
           </section>` : '';
     const nShots = b.shots ?? r.shots;
     const shots = { 0: 'None', 1: '1 · single', 2: '2 · double', 4: '4 · quad' }[nShots] ?? String(nShots);
@@ -397,6 +414,7 @@
             <div class="d-fact"><span>Needs</span><b>${esc(needs)}</b></div>
           </section>
           ${buildsHTML}
+          ${shotsHTML}
           <section aria-labelledby="ing-h">
             <div class="d-sec-head">
               <h3 id="ing-h">Ingredients</h3>
@@ -431,7 +449,7 @@
     if (!r) return;
     stopTimer();
     const swapping = detailOpen && openSlug !== slug;
-    if (openSlug !== slug) { servings = 1; build = r.defaultBuild; }
+    if (openSlug !== slug) { servings = 1; build = r.defaultBuild; shot = 'double'; }
     openSlug = slug;
     document.title = `${r.name} — ${SITE.name}`;
 
@@ -507,17 +525,20 @@
     const goEl = t.closest('[data-go]');
     if (goEl) { e.preventDefault(); go(goEl.dataset.go); return; }
 
-    const bt = t.closest('[data-build]');
+    // Hot / Iced and Double / Single switches
+    const bt = t.closest('[data-build], [data-shot]');
     if (bt) {
-      if (bt.dataset.build === build) return;
+      const key = bt.dataset.build ? 'build' : 'shot';
+      const val = bt.dataset[key];
+      if (val === (key === 'build' ? build : shot)) return;
       stopTimer();
-      build = bt.dataset.build;
+      if (key === 'build') build = val; else shot = val;
       // swap only the recipe column so the photo doesn't reload
       const tmp = document.createElement('div');
       tmp.innerHTML = detailHTML(BY[openSlug]);
       $('.d-main', sheetEl).replaceWith($('.d-main', tmp));
       $$('.ing__amt', sheetEl).forEach(el => el.classList.add('is-bump'));
-      $(`[data-build="${build}"]`, sheetEl)?.focus({ preventScroll: true });
+      $(`[data-${key}="${val}"]`, sheetEl)?.focus({ preventScroll: true });
       return;
     }
 
@@ -827,7 +848,7 @@
   const beanLinks = slugs => slugs.filter(s => BY[s]).map(s => `<a href="#/${s}">${esc(BY[s].name)}</a>`).join(', ');
   const span = ([a, b], unit) => (a === b ? `${a} ${unit}` : `${a}–${b} ${unit}`);
   const SIZES = ['double', 'single'];
-  const loadText = (size, on) => (on ? `${BUILD_LABEL[size]} loaded` : `Load ${size} ↑`);
+  const loadText = (size, on) => (on ? `${SHOT_LABEL[size]} loaded` : `Load ${size} ↑`);
 
   function renderBeans() {
     const el = $('[data-beans]');
@@ -842,7 +863,7 @@
         <table class="bean__shots">
           <thead><tr><th scope="col"><span class="visually-hidden">Shot</span></th><th scope="col">Dose</th><th scope="col">Yield</th><th scope="col">Time</th></tr></thead>
           <tbody>${SIZES.map(k => `
-            <tr><th scope="row">${BUILD_LABEL[k]}</th><td>${b.shots[k].dose} g</td><td>${span(b.shots[k].out, 'g')}</td><td>${span(b.shots[k].time, 's')}</td></tr>`).join('')}
+            <tr><th scope="row">${SHOT_LABEL[k]}</th><td>${b.shots[k].dose} g</td><td>${span(b.shots[k].out, 'g')}</td><td>${span(b.shots[k].time, 's')}</td></tr>`).join('')}
           </tbody>
           <tfoot><tr><th scope="row">Water</th><td colspan="3">${esc(b.water)}</td></tr></tfoot>
         </table>

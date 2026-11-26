@@ -456,7 +456,8 @@ input[type="range"]::-moz-range-thumb { width: 14px; height: 14px; border-radius
 .tag--try { background: var(--crema); border-color: var(--crema); }
 .tag--tried { background: var(--coffee); border-color: var(--coffee); color: var(--paper); }
 
-/* hot / iced switch */
+/* hot / iced and double / single switches */
+.d-shot-note { grid-column: 1 / -1; padding: 12px var(--pad) 14px; border-top: 1px solid var(--line); font-size: var(--t-sm); color: var(--ink-2); }
 .d-builds { display: grid; grid-template-columns: repeat(2, 1fr); }
 .d-builds button {
   display: flex; justify-content: space-between; align-items: baseline; gap: 10px;

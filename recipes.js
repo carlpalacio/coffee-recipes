@@ -14,6 +14,10 @@
        - Words don't scale: 'Pinch', 'Dash', 'Lots', 'To taste'
        - batch: true on a group stops it scaling (it makes several drinks)
    • steps:  a string, or [text, seconds] to give the step a timer
+   • single: on a build, adds a Double / Single switch. List the amounts
+       that change, e.g. single: { swap: { Espresso: '1 shot', Milk: '210 g' } }.
+       Everything else, and the steps, are copied from the double.
+       Or give the single its own parts and steps (see Espresso).
    • source: { by: 'flair' | 'house' | 'classic', url?, note? }
    ------------------------------------------------------------------ */
 
@@ -22,6 +26,7 @@ window.SITE = { name: 'Kape' };
 window.STYLES = ['Cream top', 'Frothed', 'Shaken', 'Milk', 'Refresher', 'Tea', 'Black', 'Brewed', 'Dessert'];
 
 const SHOT = 'Pull a double shot (18 g in, 36 g out)';
+const SINGLE = 'Pull a single shot (9 g in, 18 g out)';
 const TT = 'https://www.tiktok.com/@flairshotscafe/video/';
 
 window.RECIPES = [
@@ -34,10 +39,9 @@ window.RECIPES = [
     slug: 'espresso', name: 'Espresso', col: 'menu', serve: ['hot'], style: 'Black',
     shots: 2, time: 2, needs: ['Scale'],
     desc: 'A straight double shot, 18 g of coffee in and 36 g out in 25 to 30 seconds, or a single from 9 g in the single basket. Every other drink on the menu starts from the double, so dial it in before you open.',
-    // Double / Single instead of Hot / Iced; both are served hot
     builds: {
-      double: {
-        cup: 'Espresso cup', sub: '18 g → 36 g', shots: 2,
+      hot: {
+        cup: 'Espresso cup',
         parts: [{ title: 'Shot', items: [['18 g', 'Fine-ground coffee', 'double basket'], ['36 g', 'Espresso out', '1 : 2 ratio']] }],
         steps: [
           'Weigh the coffee into the basket, level it and tamp evenly.',
@@ -45,16 +49,15 @@ window.RECIPES = [
           'Stop at 36 g and check the time.',
           'Under 25 seconds and sour: grind finer. Over 30 seconds and bitter: grind coarser.',
         ],
-      },
-      single: {
-        cup: 'Espresso cup', sub: '9 g → 18 g', shots: 1,
-        parts: [{ title: 'Shot', items: [['9 g', 'Fine-ground coffee', 'single basket'], ['18 g', 'Espresso out', '1 : 2 ratio']] }],
-        steps: [
-          'Swap in the single basket. Weigh in the coffee, level it and tamp evenly.',
-          ['Put the cup on a scale. Start the shot and the timer together.', 28],
-          'Stop at 18 g and check the time. Aim for the same 25–30 seconds as the double.',
-          'Leave the grinder on the double setting. If the single runs fast, add 0.5 g of coffee at a time, up to 10 g. If it runs slow, take a little out.',
-        ],
+        single: {
+          parts: [{ title: 'Shot', items: [['9 g', 'Fine-ground coffee', 'single basket'], ['18 g', 'Espresso out', '1 : 2 ratio']] }],
+          steps: [
+            'Swap in the single basket. Weigh in the coffee, level it and tamp evenly.',
+            ['Put the cup on a scale. Start the shot and the timer together.', 28],
+            'Stop at 18 g and check the time. Aim for the same 25–30 seconds as the double.',
+            'Leave the grinder on the double setting. If the single runs fast, add 0.5 g of coffee at a time, up to 10 g. If it runs slow, take a little out.',
+          ],
+        },
       },
     },
     notes: [
@@ -98,6 +101,7 @@ window.RECIPES = [
       hot: {
         cup: '300 ml cup',
         parts: [{ title: 'Cup', items: [['2 shots', 'Espresso'], ['160 g', 'Milk', 'cold from the fridge'], ['10 g', 'Brown sugar syrup', 'optional']] }],
+        single: { swap: { Espresso: '1 shot', Milk: '180 g' } },
         steps: [
           'If sweetening, put the syrup in the 300 ml cup.',
           [SHOT + ' into the cup.', 28],
@@ -121,6 +125,7 @@ window.RECIPES = [
           { title: 'Cup', items: [['25 g', 'Chocolate sauce', 'see Batch syrups'], ['15 g', 'Brown sugar syrup'], ['2 shots', 'Espresso']] },
           { title: 'Milk', items: [['170 g', 'Milk', 'steamed']] },
         ],
+        single: { swap: { Espresso: '1 shot', Milk: '190 g' } },
         steps: [
           'Put the chocolate sauce and brown sugar syrup in the 300 ml cup.',
           [SHOT + ' onto them and stir until smooth.', 28],
@@ -134,6 +139,7 @@ window.RECIPES = [
           { title: 'Coffee', items: [['25 g', 'Chocolate sauce', 'see Batch syrups'], ['15 g', 'Brown sugar syrup'], ['2 shots', 'Espresso']] },
           { title: 'Cup', items: [['100 g', 'Ice'], ['180 g', 'Milk']] },
         ],
+        single: { swap: { Espresso: '1 shot', Milk: '200 g' } },
         steps: [
           'Put the chocolate sauce and brown sugar syrup in a small jug.',
           [SHOT + ' onto them and stir until smooth.', 28],
@@ -153,6 +159,7 @@ window.RECIPES = [
       hot: {
         cup: '300 ml cup',
         parts: [{ title: 'Cup', items: [['20 g', 'Brown sugar syrup'], ['2 shots', 'Espresso'], ['190 g', 'Milk', 'steamed']] }],
+        single: { swap: { Espresso: '1 shot', Milk: '210 g' } },
         steps: [
           'Put the brown sugar syrup in the 300 ml cup.',
           [SHOT + ' onto it and stir.', 28],
@@ -166,6 +173,7 @@ window.RECIPES = [
           { title: 'Coffee', items: [['30 g', 'Brown sugar syrup'], ['Pinch', 'Salt'], ['2 shots', 'Espresso']] },
           { title: 'Cup', items: [['100 g', 'Ice'], ['180 g', 'Milk']] },
         ],
+        single: { swap: { Espresso: '1 shot', Milk: '200 g' } },
         steps: [
           'Put the brown sugar syrup and salt in a small jug.',
           [SHOT + ' straight onto them.', 28],
@@ -185,6 +193,7 @@ window.RECIPES = [
       hot: {
         cup: '300 ml cup',
         parts: [{ title: 'Cup', items: [['30 g', 'Condensed milk'], ['2 shots', 'Espresso'], ['180 g', 'Milk', 'steamed']] }],
+        single: { swap: { Espresso: '1 shot', Milk: '200 g' } },
         steps: [
           'Put the condensed milk in the 300 ml cup.',
           [SHOT + ' onto it and stir until smooth.', 28],
@@ -199,6 +208,7 @@ window.RECIPES = [
           { title: 'Cold foam', items: [['35 g', 'Sea salt foam base', 'from the batch']] },
           { title: 'Cup', items: [['100 g', 'Ice'], ['140 g', 'Milk']] },
         ],
+        single: { swap: { Espresso: '1 shot', Milk: '160 g' } },
         steps: [
           [SHOT + ' onto the condensed milk and mix until smooth and creamy.', 28],
           'Froth 35 g of the sea salt foam base until thick but still pourable.',
@@ -224,6 +234,7 @@ window.RECIPES = [
           { title: 'Foam', items: [['50 g', 'Sea salt foam base', 'from the batch']] },
           { title: 'Cup', items: [['2 shots', 'Espresso'], ['150 g', 'Milk', 'steamed']] },
         ],
+        single: { swap: { Espresso: '1 shot', Milk: '170 g' } },
         steps: [
           [SHOT + ' into the 300 ml cup.', 28],
           'Steam the milk with very little air to 55–60 °C and pour it in. Slightly cooler milk holds the foam longer.',
@@ -237,6 +248,7 @@ window.RECIPES = [
           { title: 'Foam', items: [['50 g', 'Sea salt foam base', 'from the batch']] },
           { title: 'Cup', items: [['100 g', 'Ice'], ['140 ml', 'Milk'], ['2 shots', 'Espresso']] },
         ],
+        single: { swap: { Espresso: '1 shot', Milk: '160 ml' } },
         steps: [
           'Shake the foam base, then froth 50 g in a jug until thick but still pourable.',
           'Fill the 380 ml cup with the ice and pour in the milk.',
@@ -1079,6 +1091,15 @@ window.RECIPES = [
     source: { by: 'classic', url: 'https://www.jameshoffmann.co.uk/weird-coffee-science/caffe-shakerato' },
   },
 ];
+
+/* Single-shot versions. A build with single: { swap } gets a copy of the
+   double with the swapped amounts, and its "pull a double" step pulls a single. */
+window.RECIPES.forEach(r => Object.values(r.builds || {}).forEach(b => {
+  const s = b.single;
+  if (!s || s.parts) return;
+  s.parts = b.parts.map(p => ({ ...p, items: p.items.map(i => (s.swap[i[1]] ? [s.swap[i[1]], ...i.slice(1)] : i)) }));
+  s.steps = b.steps.map(st => (Array.isArray(st) ? [st[0].replace(SHOT, SINGLE), st[1]] : st.replace(SHOT, SINGLE)));
+}));
 
 /* ---------------- Batch syrups & sauces (Basics section) ---------------- */
 window.SYRUPS = [
